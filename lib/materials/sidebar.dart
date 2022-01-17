@@ -43,7 +43,7 @@ class _SideBarState extends State<SideBar> {
                             bottomLeft: Radius.circular(225.0),
                             bottomRight: Radius.circular(225.0),
                           ),
-                          color: Colors.indigo,
+                          color: Colors.teal,
                         ),
                         child: Container(
                           height: 25,
