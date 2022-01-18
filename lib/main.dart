@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:salessystem/pages/account/login.dart';
+import 'package:salessystem/pages/account/register.dart';
+import 'package:salessystem/pages/customer/customer.dart';
 import 'package:salessystem/pages/home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -17,9 +22,44 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      home: Scaffold(
-        body: Home(),
-      ),
+      home: CustomerList(),
+    );
+  }
+}
+
+class CheckAuth extends StatefulWidget {
+  @override
+  _CheckAuthState createState() => _CheckAuthState();
+}
+
+class _CheckAuthState extends State<CheckAuth> {
+  bool isAuth = false;
+  @override
+  void initState() {
+    _checkIfLoggedIn();
+    super.initState();
+  }
+
+  void _checkIfLoggedIn() async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var token = localStorage.getString('token');
+    if (token != null) {
+      setState(() {
+        isAuth = true;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget child;
+    if (isAuth) {
+      child = Home();
+    } else {
+      child = Login();
+    }
+    return Scaffold(
+      body: child,
     );
   }
 }

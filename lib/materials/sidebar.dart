@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:salessystem/pages/complaint.dart';
+import 'package:salessystem/pages/customer/customer.dart';
 import 'package:salessystem/pages/home.dart';
 import 'package:salessystem/pages/order.dart';
 import 'package:salessystem/pages/reviewplan.dart';
@@ -89,6 +90,17 @@ class _SideBarState extends State<SideBar> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => ReviewPlan()),
+              );
+            },
+          ),
+
+          // Customer
+          ListTile(
+            title: Text("Customer"),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CustomerList()),
               );
             },
           ),
