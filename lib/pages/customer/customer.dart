@@ -17,11 +17,6 @@ class CustomerList extends StatelessWidget {
     return json.decode(response.body);
   }
 
-  // Future editProducts() async {
-  //   var response = await http.get(Uri.parse(url + ""));
-  //   return json.decode(response.body);
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,6 +24,12 @@ class CustomerList extends StatelessWidget {
         title: Text("Customer List"),
       ),
       drawer: SideBar(),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          Icons.add,
+        ),
+        onPressed: () {},
+      ),
       body: FutureBuilder(
           future: getProducts(),
           builder: (context, snapshot) {
