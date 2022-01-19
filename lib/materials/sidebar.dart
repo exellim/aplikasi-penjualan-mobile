@@ -95,15 +95,15 @@ class _SideBarState extends State<SideBar> {
           ),
 
           // Customer
-          // ListTile(
-          //   title: Text("Customer"),
-          //   onTap: () {
-          //     Navigator.push(
-          //       context,
-          //       MaterialPageRoute(builder: (context) => CustomerList()),
-          //     );
-          //   },
-          // ),
+          ListTile(
+            title: Text("Customer"),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CustomerList()),
+              );
+            },
+          ),
 
           // Order
           ListTile(

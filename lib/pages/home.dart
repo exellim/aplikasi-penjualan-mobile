@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:salessystem/materials/sidebar.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../network_utils/api.dart';
 
 class Home extends StatelessWidget {
   // const Home({Key? key}) : super(key: key);
@@ -19,14 +18,14 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Network().getData('/profile');
+    // Network().getData('/profile');
     return Scaffold(
       appBar: AppBar(
         title: Text("Home"),
       ),
       drawer: SideBar(),
       body: FutureBuilder(
-          future: Network().getData('/profile'),
+          // future: Network().getData('/profile'),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return Container(
