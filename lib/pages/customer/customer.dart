@@ -2,8 +2,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:salessystem/materials/sidebar.dart';
 import 'package:http/http.dart' as http;
+import 'package:salessystem/models/customerModel.dart';
 import 'dart:convert';
 import 'dart:async';
+import 'package:flutter/services.dart';
 
 import 'addcustomer.dart';
 
@@ -26,6 +28,10 @@ class _CustomerListState extends State<CustomerList> {
 
   @override
   Widget build(BuildContext context) {
+    CustomerModel _customerModel;
+    TextEditingController namaController = TextEditingController();
+    TextEditingController alamatController = TextEditingController();
+    TextEditingController handphoneController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
         title: Text("Customer List"),
@@ -36,7 +42,6 @@ class _CustomerListState extends State<CustomerList> {
           Icons.add,
         ),
         onPressed: () {
-          createCustomer(context);
         },
       ),
       body: FutureBuilder(
@@ -114,5 +119,24 @@ class _CustomerListState extends State<CustomerList> {
             }
           }),
     );
+  }
+}
+
+Future<CustomerModel> submitCustomer(
+    String nama, String alamat_rumah, String handphone) async {
+  final String url = 'http://127.0.0.1:8000/api/customer/add';
+  var response = await http.post(Uri.parse(url), body: {
+    "nama": nama,
+    "alamat_rumah": alamat_rumah,
+    "handphone": handphone,
+  });
+  var data = response.body;
+  print(data);
+
+  if (response.statusCode == 200) {
+    String responseString = response.body;
+    customerModelFromJson(responseString);
+  } else {
+    return null;
   }
 }

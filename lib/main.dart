@@ -3,6 +3,7 @@ import 'package:salessystem/pages/account/login.dart';
 import 'package:salessystem/pages/account/register.dart';
 import 'package:salessystem/pages/customer/customer.dart';
 import 'package:salessystem/pages/home.dart';
+import 'package:salessystem/pages/plan/planlist.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      home: CustomerList(),
+      home: PlanList(),
     );
   }
 }

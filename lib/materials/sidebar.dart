@@ -3,6 +3,7 @@ import 'package:salessystem/pages/complaint.dart';
 import 'package:salessystem/pages/customer/customer.dart';
 import 'package:salessystem/pages/home.dart';
 import 'package:salessystem/pages/order.dart';
+import 'package:salessystem/pages/plan/planlist.dart';
 import 'package:salessystem/pages/reviewplan.dart';
 import 'package:salessystem/pages/salesvisit.dart';
 import 'package:salessystem/pages/tagihan.dart';
@@ -89,7 +90,7 @@ class _SideBarState extends State<SideBar> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ReviewPlan()),
+                MaterialPageRoute(builder: (context) => PlanList()),
               );
             },
           ),

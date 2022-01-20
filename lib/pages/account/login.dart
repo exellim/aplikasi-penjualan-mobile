@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../home.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import '../../network_utils/api.dart';
+// import '../../network_utils/api.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -125,7 +125,7 @@ class _LoginState extends State<Login> {
                               borderRadius: new BorderRadius.circular(20.0)),
                           onPressed: () {
                             if (_formKey.currentState.validate()) {
-                              _login();
+                              // _login();
                             }
                           },
                         ),
@@ -173,28 +173,28 @@ class _LoginState extends State<Login> {
     );
   }
 
-  void _login() async {
-    setState(() {
-      _isLoading = true;
-    });
-    var data = {'email': email, 'password': password};
+//   void _login() async {
+//     setState(() {
+//       _isLoading = true;
+//     });
+//     var data = {'email': email, 'password': password};
 
-    var res = await Network().authData(data, '/login');
-    var body = json.decode(res.body);
-    if (body == 'success') {
-      SharedPreferences localStorage = await SharedPreferences.getInstance();
-      localStorage.setString('token', json.encode(body['token']));
-      localStorage.setString('user', json.encode(body['user']));
-      Navigator.push(
-        context,
-        new MaterialPageRoute(builder: (context) => Home()),
-      );
-    } else {
-      _showMsg(body['message']);
-    }
+//     var res = await Network().authData(data, '/login');
+//     var body = json.decode(res.body);
+//     if (body == 'success') {
+//       SharedPreferences localStorage = await SharedPreferences.getInstance();
+//       localStorage.setString('token', json.encode(body['token']));
+//       localStorage.setString('user', json.encode(body['user']));
+//       Navigator.push(
+//         context,
+//         new MaterialPageRoute(builder: (context) => Home()),
+//       );
+//     } else {
+//       _showMsg(body['message']);
+//     }
 
-    setState(() {
-      _isLoading = false;
-    });
-  }
+//     setState(() {
+//       _isLoading = false;
+//     });
+//   }
 }

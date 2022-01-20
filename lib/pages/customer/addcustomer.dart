@@ -1,5 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'package:salessystem/models/customerModel.dart';
+
+
+CustomerModel _customerModel;
+TextEditingController namaController = TextEditingController();
+TextEditingController alamatController = TextEditingController();
+TextEditingController handphoneController = TextEditingController();
 
 Future createCustomer(context) {
   showModalBottomSheet(
@@ -55,6 +65,7 @@ Future createCustomer(context) {
                               .size
                               .width, // do it in both Container
                           child: TextFormField(
+                            controller: namaController,
                             decoration: InputDecoration(
                               hintText: "Nama Customer",
                               contentPadding: EdgeInsets.all(8.0),
@@ -74,6 +85,7 @@ Future createCustomer(context) {
                               .size
                               .width, // do it in both Container
                           child: TextFormField(
+                            controller: alamatController,
                             decoration: InputDecoration(
                               hintText: "Alamat Customer",
                               contentPadding: EdgeInsets.all(8.0),
@@ -93,6 +105,7 @@ Future createCustomer(context) {
                               .size
                               .width, // do it in both Container
                           child: TextFormField(
+                            controller: handphoneController,
                             keyboardType: TextInputType.number,
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly
@@ -125,7 +138,14 @@ Future createCustomer(context) {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(18.0)),
                             child: new Text('round button'),
-                            onPressed: () {},
+                            onPressed: () async {
+                              String nama = namaController.text;
+                              String alamat_rumah = alamatController.text;
+                              String handphone = handphoneController.text;
+
+                              CustomerModel customer = await submitCustomer(
+                                  nama, alamat_rumah, handphone);
+                            },
                           ),
                         ),
                       ),
@@ -138,4 +158,23 @@ Future createCustomer(context) {
           ),
         );
       });
+}
+
+Future<CustomerModel> submitCustomer(
+    String nama, String alamat_rumah, String handphone) async {
+  final String url = 'http://127.0.0.1:8000/api/customer/add';
+  var response = await http.post(Uri.parse(url), body: {
+    "nama": nama,
+    "alamat_rumah": alamat_rumah,
+    "handphone": handphone,
+  });
+  var data = response.body;
+  print(data);
+
+  if (response.statusCode == 200) {
+    String responseString = response.body;
+    customerModelFromJson(responseString);
+  } else {
+    return null;
+  }
 }
