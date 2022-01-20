@@ -42,6 +42,9 @@ dependencies:
   shared_preferences: ^2.0.12
   rflutter_alert: ^2.0.4
   auto_size_text: ^3.0.0
+  fuzzy: ^0.3.0
+  hooks_riverpod: ^1.0.3
+  search_widget: ^1.0.2
 
 dev_dependencies:
   flutter_test:

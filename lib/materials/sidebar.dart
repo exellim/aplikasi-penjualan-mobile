@@ -54,7 +54,7 @@ class _SideBarState extends State<SideBar> {
                             shape: BoxShape.circle,
                             color: Colors.black,
                           ),
-                          child: Image.asset("/images/cp_logo.png"),
+                          // child: Image.asset("/images/cp_logo.png"),
                         ),
                       ),
                     ),

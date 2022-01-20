@@ -5,9 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:salessystem/models/customerModel.dart';
 import 'dart:convert';
 import 'dart:async';
-import 'package:flutter/services.dart';
-
-import 'addcustomer.dart';
 
 class CustomerList extends StatefulWidget {
   const CustomerList({
@@ -19,10 +16,11 @@ class CustomerList extends StatefulWidget {
 }
 
 class _CustomerListState extends State<CustomerList> {
-  final String url = 'http://127.0.0.1:8000/api/customer';
+  String query = '';
+  final String url = 'http://127.0.0.1:8000/api/customer/';
 
-  Future getProducts() async {
-    var response = await http.get(Uri.parse(url));
+  Future getCustomer() async {
+    var response = await http.get(Uri.parse(url + query));
     return json.decode(response.body);
   }
 
@@ -41,15 +39,37 @@ class _CustomerListState extends State<CustomerList> {
         child: Icon(
           Icons.add,
         ),
-        onPressed: () {
-        },
+        onPressed: () {},
       ),
       body: FutureBuilder(
-          future: getProducts(),
+          future: getCustomer(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ListView(
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top: 10.0, bottom: 10.0, right: 8.0, left: 8.0),
+                    child: TextField(
+                      decoration: InputDecoration(
+                          labelText: 'Search Name',
+                          enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(width: 3, color: Colors.blue),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(width: 3, color: Colors.red),
+                            borderRadius: BorderRadius.circular(15),
+                          )),
+                      onChanged: (value) {
+                        setState(() {
+                          query = value;
+                        });
+                      },
+                    ),
+                  ),
                   GridView.builder(
                       shrinkWrap: true,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
