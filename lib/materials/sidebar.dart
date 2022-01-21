@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:salessystem/pages/complaint.dart';
 import 'package:salessystem/pages/customer/customer.dart';
@@ -7,6 +9,10 @@ import 'package:salessystem/pages/plan/planlist.dart';
 import 'package:salessystem/pages/reviewplan.dart';
 import 'package:salessystem/pages/salesvisit.dart';
 import 'package:salessystem/pages/tagihan.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../network/api.dart';
+import '../pages/account/login.dart';
 
 class SideBar extends StatefulWidget {
   SideBar({Key key}) : super(key: key);
@@ -149,8 +155,37 @@ class _SideBarState extends State<SideBar> {
               );
             },
           ),
+
+          // Logout
+          ListTile(
+            title: Row(
+              children: [
+                Text("LogOut"),
+                Icon(Icons.logout_sharp),
+              ],
+            ),
+            onTap: () {
+              logout();
+                    Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => Login()));
+            },
+          ),
         ],
       ),
     );
+  }
+
+  void logout() async {
+    var res = await Network().getData('/logout');
+    var body = json.decode(res.body);
+    if (body['message'] ==
+        'You have successfully logged out and the token was successfully deleted') {
+      SharedPreferences localStorage = await SharedPreferences.getInstance();
+      localStorage.remove('user');
+      localStorage.remove('token');
+
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => Login()));
+    }
   }
 }

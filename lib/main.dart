@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      home: PlanList(),
+      home: Login(),
     );
   }
 }
@@ -35,19 +35,22 @@ class CheckAuth extends StatefulWidget {
 
 class _CheckAuthState extends State<CheckAuth> {
   bool isAuth = false;
+
   @override
   void initState() {
-    _checkIfLoggedIn();
     super.initState();
+    _checkIfLoggedIn();
   }
 
   void _checkIfLoggedIn() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     var token = localStorage.getString('token');
     if (token != null) {
-      setState(() {
-        isAuth = true;
-      });
+      if (mounted) {
+        setState(() {
+          isAuth = true;
+        });
+      }
     }
   }
 
@@ -59,6 +62,7 @@ class _CheckAuthState extends State<CheckAuth> {
     } else {
       child = Login();
     }
+
     return Scaffold(
       body: child,
     );

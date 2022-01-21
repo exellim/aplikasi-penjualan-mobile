@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:salessystem/network/api.dart';
 import 'register.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,9 +18,7 @@ class _LoginState extends State<Login> {
   bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
   String email, password;
-  // TextEditingController TEC_email = new TextEditingController();
 
-  // TextEditingController TEC_password = new TextEditingController();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _secureText = true;
 
@@ -125,7 +124,7 @@ class _LoginState extends State<Login> {
                               borderRadius: new BorderRadius.circular(20.0)),
                           onPressed: () {
                             if (_formKey.currentState.validate()) {
-                              // _login();
+                              _login();
                             }
                           },
                         ),
@@ -141,7 +140,7 @@ class _LoginState extends State<Login> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Does'nt have an account? ",
+                    "don't have an account? ",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -173,28 +172,26 @@ class _LoginState extends State<Login> {
     );
   }
 
-//   void _login() async {
-//     setState(() {
-//       _isLoading = true;
-//     });
-//     var data = {'email': email, 'password': password};
+  void _login() async {
+    setState(() {
+      _isLoading = true;
+    });
+    var data = {'email': email, 'password': password};
 
-//     var res = await Network().authData(data, '/login');
-//     var body = json.decode(res.body);
-//     if (body == 'success') {
-//       SharedPreferences localStorage = await SharedPreferences.getInstance();
-//       localStorage.setString('token', json.encode(body['token']));
-//       localStorage.setString('user', json.encode(body['user']));
-//       Navigator.push(
-//         context,
-//         new MaterialPageRoute(builder: (context) => Home()),
-//       );
-//     } else {
-//       _showMsg(body['message']);
-//     }
+    var res = await Network().auth(data, 'login');
+    var body = json.decode(res.body);
+    if (body['response'] == '200') {
+      SharedPreferences localStorage = await SharedPreferences.getInstance();
+      localStorage.setString('token', json.encode(body['token']));
+      localStorage.setString('user', json.encode(body['user']));
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => Home()));
+    } else {
+      _showMsg(body['message']);
+    }
 
-//     setState(() {
-//       _isLoading = false;
-//     });
-//   }
+    setState(() {
+      _isLoading = false;
+    });
+  }
 }

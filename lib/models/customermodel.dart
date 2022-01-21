@@ -57,11 +57,10 @@ class PostCustomer {
 
   factory PostCustomer.createPostCustomer(Map<String, dynamic> json) {
     return PostCustomer(
-      id: json["id"],
-      nama: json["nama"],
-      alamatRumah: json["alamat_rumah"],
-      handphone: json["handphone"]
-    );
+        id: json["id"],
+        nama: json["nama"],
+        alamatRumah: json["alamat_rumah"],
+        handphone: json["handphone"]);
   }
 
   static Future<PostCustomer> connectApi(
@@ -77,4 +76,14 @@ class PostCustomer {
 
     return PostCustomer.createPostCustomer(jsonObject);
   }
+}
+
+class namaCustomer {
+  namaCustomer(
+    this.id,
+    this.nama,
+  );
+
+  final int id;
+  final String nama;
 }

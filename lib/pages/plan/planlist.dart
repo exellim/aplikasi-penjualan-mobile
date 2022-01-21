@@ -1,10 +1,12 @@
-import 'package:auto_size_text/auto_size_text.dart';
+// import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 
 import 'package:salessystem/materials/sidebar.dart';
+import 'package:salessystem/pages/plan/createplan.dart';
+import '../../network/api.dart';
 
 class PlanList extends StatefulWidget {
   PlanList({Key key}) : super(key: key);
@@ -14,11 +16,8 @@ class PlanList extends StatefulWidget {
 }
 
 class _PlanListState extends State<PlanList> {
-  final String url = 'http://127.0.0.1:8000/api/kunjungan';
-
-  Future getPlan() async {
-    var response = await http.get(Uri.parse(url));
-    return json.decode(response.body);
+  getPlan() async {
+    return _getData();
   }
 
   @override
@@ -32,14 +31,25 @@ class _PlanListState extends State<PlanList> {
         child: Icon(
           Icons.add,
         ),
-        onPressed: () {},
+        onPressed: () {
+          _navigateToNextScreen(context);
+        },
       ),
       body: FutureBuilder(
           future: getPlan(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return ListView(
+              return Column(
                 children: [
+                  Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Row(
+                      children: [
+                        Text("Plan Finished: "),
+                        Text(snapshot.data['data'].length.toString()),
+                      ],
+                    ),
+                  ),
                   ListView.builder(
                       shrinkWrap: true,
                       itemCount: snapshot.data['data'].length,
@@ -89,7 +99,7 @@ class _PlanListState extends State<PlanList> {
                             ),
                           ),
                         );
-                      })
+                      }),
                 ],
               );
             } else {
@@ -98,4 +108,15 @@ class _PlanListState extends State<PlanList> {
           }),
     );
   }
+}
+
+void _navigateToNextScreen(BuildContext context) {
+  Navigator.of(context)
+      .push(MaterialPageRoute(builder: (context) => CreatePlan()));
+}
+
+void _getData() async {
+  var res = await Network().getData('kunjungan');
+  var body = json.decode(res.body);
+  return body;
 }
