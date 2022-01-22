@@ -164,7 +164,10 @@ class _AddCustomerState extends State<AddCustomer> {
                                       })
                                     ..show();
                                   PostCustomer.connectApi(
-                                      nama, alamat, handphone);
+                                          nama, alamat, handphone)
+                                      .then((value) {
+                                    setState(() {});
+                                  });
                                 }
                               },
                               child: Row(
@@ -211,30 +214,5 @@ class _AddCustomerState extends State<AddCustomer> {
             ),
           )),
     );
-  }
-
-  void _addCustomer() async {
-    setState(() {
-      _isLoading = true;
-    });
-    var data = {
-      'nama': nama,
-      'alamat_rumah': alamat,
-      'handphone': handphone,
-    };
-
-    // var data = PostCustomer.createPostCustomer(val);
-
-    var res = await Network().auth(data, 'customer/add');
-    var body = json.decode(res.body);
-    if (['message'] == 'success') {
-      SharedPreferences localStorage = await SharedPreferences.getInstance();
-      localStorage.setString('token', json.encode(body['token']));
-      localStorage.setString('body', json.encode(body['data']));
-    }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 }

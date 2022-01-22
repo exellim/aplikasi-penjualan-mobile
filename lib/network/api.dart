@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Network {
   final String _url = 'http://127.0.0.1:8000/api/';
-  //if you are using android studio emulator, change localhost to 10.0.2.2
   var token;
 
   _getToken() async {
@@ -20,6 +19,13 @@ class Network {
         body: jsonEncode(data), headers: _setHeaders());
   }
 
+  // sendData(data, apiURL) async {
+  //   var fullUrl = _url + apiURL;
+  //   print(token);
+  //   return await http.post(Uri.parse(fullUrl),
+  //       body: jsonEncode(data), headers: _setHeaders());
+  // }
+
   getData(apiURL) async {
     var fullUrl = _url + apiURL;
     await _getToken();
@@ -27,6 +33,14 @@ class Network {
       Uri.parse(fullUrl),
       headers: _setHeaders(),
     );
+  }
+
+  sendData(apiURL, body) async {
+    var fullUrl = _url + apiURL;
+    await _getToken();
+    print(token);
+    return await http.post(Uri.parse(fullUrl),
+        body: body, headers: {'Authorization': 'Bearer $token'});
   }
 
   _setHeaders() => {
