@@ -112,7 +112,8 @@ class _CustomerListState extends State<CustomerList> {
 }
 
 void _getData() async {
-  var res = await Network().getData('customer/');
+  var res = await Network().getData('customer');
   var body = json.decode(res.body);
   return body;
+//  var res =  Network.getData('customer');
 }

@@ -1,26 +1,20 @@
-import 'dart:convert';
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:salessystem/models/customerModel.dart';
+import 'package:salessystem/models/customermodel.dart';
 import 'package:salessystem/pages/customer/customer.dart';
-// import '../../network_utils/api.dart';
-import '../../network/api.dart';
-// import 'package:tutorial_app/screen/home.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:tutorial_app/screen/login.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 class AddCustomer extends StatefulWidget {
+  AddCustomer({Key key}) : super(key: key);
+
   @override
   _AddCustomerState createState() => _AddCustomerState();
 }
 
 class _AddCustomerState extends State<AddCustomer> {
-  bool _isLoading = false;
-  final _formKey = GlobalKey<FormState>();
-  String nama;
-  String alamat;
-  String handphone;
+  final formKey = GlobalKey<FormState>(); //key for form
+  String nama, alamat, handphone;
+  PostCustomer postResult = null;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +24,7 @@ class _AddCustomerState extends State<AddCustomer> {
       ),
       resizeToAvoidBottomInset: true,
       body: Form(
-          key: _formKey,
+          key: formKey,
           child: SingleChildScrollView(
             child: Center(
               child: Column(children: [
@@ -144,7 +138,7 @@ class _AddCustomerState extends State<AddCustomer> {
                               color: Colors.green,
                               padding: EdgeInsets.all(20),
                               onPressed: () {
-                                if (_formKey.currentState.validate()) {
+                                if (formKey.currentState.validate()) {
                                   AwesomeDialog(
                                       context: context,
                                       animType: AnimType.LEFTSLIDE,
@@ -164,7 +158,10 @@ class _AddCustomerState extends State<AddCustomer> {
                                       })
                                     ..show();
                                   PostCustomer.connectApi(
-                                      nama, alamat, handphone);
+                                          nama, alamat, handphone)
+                                      .then((value) {
+                                    setState(() {});
+                                  });
                                 }
                               },
                               child: Row(
@@ -211,30 +208,5 @@ class _AddCustomerState extends State<AddCustomer> {
             ),
           )),
     );
-  }
-
-  void _addCustomer() async {
-    setState(() {
-      _isLoading = true;
-    });
-    var data = {
-      'nama': nama,
-      'alamat_rumah': alamat,
-      'handphone': handphone,
-    };
-
-    // var data = PostCustomer.createPostCustomer(val);
-
-    var res = await Network().auth(data, 'customer/add');
-    var body = json.decode(res.body);
-    if (['message'] == 'success') {
-      SharedPreferences localStorage = await SharedPreferences.getInstance();
-      localStorage.setString('token', json.encode(body['token']));
-      localStorage.setString('body', json.encode(body['data']));
-    }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 }

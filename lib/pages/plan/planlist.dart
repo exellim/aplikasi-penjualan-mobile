@@ -56,9 +56,9 @@ class _PlanListState extends State<PlanList> {
                       itemBuilder: (context, index) {
                         return Container(
                           child: Card(
-                            margin: EdgeInsets.all(10.0),
+                            margin: EdgeInsets.all(5.0),
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25.0)),
+                                borderRadius: BorderRadius.circular(10.0)),
                             elevation: 5,
                             child: Row(
                               // mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -68,7 +68,7 @@ class _PlanListState extends State<PlanList> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Container(
-                                      padding: EdgeInsets.all(10.0),
+                                      padding: EdgeInsets.all(15.0),
                                       child: Column(
                                         children: [
                                           Text(

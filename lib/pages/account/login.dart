@@ -180,7 +180,7 @@ class _LoginState extends State<Login> {
 
     var res = await Network().auth(data, 'login');
     var body = json.decode(res.body);
-    if (body['response'] == '200') {
+    if (body['message'] == 'Connected') {
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.setString('token', json.encode(body['token']));
       localStorage.setString('user', json.encode(body['user']));
