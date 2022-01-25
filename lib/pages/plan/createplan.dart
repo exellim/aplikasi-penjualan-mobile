@@ -29,6 +29,7 @@ class _CreatePlanState extends State<CreatePlan> {
       tujuan_value;
 
   var now = DateTime.now();
+  String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   List namaList;
   String _nama;
@@ -321,7 +322,7 @@ class _CreatePlanState extends State<CreatePlan> {
                                     });
                                   } else {
                                     setState(() {
-                                      _catatan = value;
+                                      _catatan = " ";
                                       catatan = _catatan;
                                     });
                                   }
@@ -384,12 +385,14 @@ class _CreatePlanState extends State<CreatePlan> {
                                   ..show();
                                 PostPlan.connectApi(
                                         nama,
-                                        tanggalKunjungan,
-                                        jamMulai,
-                                        jamSelesai,
-                                        catatan,
-                                        kunjungan_value,
-                                        tujuan_value,
+                                        (tanggalKunjungan ?? today),
+                                        (jamMulai ??
+                                            "${timeMulai.hour}:${timeMulai.minute}"),
+                                        (jamSelesai ??
+                                            "${timeSelesai.hour}:${timeSelesai.minute}"),
+                                        (catatan ?? 'Tidak ada Catatan'),
+                                        (kunjungan_value ?? 'no'),
+                                        (tujuan_value ?? 'no'),
                                         emp_number)
                                     .then((value) {
                                   setState(() {});

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -57,7 +58,6 @@ class PlanModel {
 }
 
 class PostPlan {
-
   int id;
   String nama;
   String tujuan_value;
@@ -84,12 +84,12 @@ class PostPlan {
     return PostPlan(
       id: json["id"],
       nama: json["nama"],
-      tujuan_value: json["tujuan_value"],
-      kunjungan_value: json["kunjungan_value"],
-      tanggalTujuan: DateTime.parse(json["tanggal_tujuan"]),
-      jamMulai: json["jam_mulai"],
-      jamSelesai: json["jam_selesai"],
-      catatan: json["catatan"],
+      tujuan_value: json["tujuan_value"] ?? "no",
+      kunjungan_value: json["kunjungan_value"] ?? "no",
+      tanggalTujuan: DateTime.parse(json["tanggal_tujuan"]) ?? DateTime.now(),
+      jamMulai: json["jam_mulai"] ?? TimeOfDay.now(),
+      jamSelesai: json["jam_selesai"] ?? TimeOfDay.now(),
+      catatan: json["catatan"] ?? "tidak ada catatan",
       emp_number: json["emp_number"],
     );
   }
