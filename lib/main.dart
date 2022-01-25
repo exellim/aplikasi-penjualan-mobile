@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:salessystem/pages/account/login.dart';
 import 'package:salessystem/pages/account/register.dart';
 import 'package:salessystem/pages/customer/customer.dart';
+import 'package:salessystem/pages/forms/suratjalan.dart';
 import 'package:salessystem/pages/home.dart';
 import 'package:salessystem/pages/plan/planlist.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -58,7 +59,7 @@ class _CheckAuthState extends State<CheckAuth> {
   Widget build(BuildContext context) {
     Widget child;
     if (isAuth) {
-      child = Home();
+      child = SuratJalan();
     } else {
       child = Login();
     }

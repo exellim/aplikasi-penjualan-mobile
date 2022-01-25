@@ -26,18 +26,13 @@ class _SideBarState extends State<SideBar> {
     await Network().getData('profile').then((response) {
       var body = json.decode(response.body);
 
-      setState(() {
-        // print(body);
-        nama = body['name'];
-        emp_number = body['emp_number'];
-        img_url = body['img_url'];
-      });
+      return body;
     });
   }
 
   String emp_number;
   String nama;
-  String img_url;
+  var img_url;
 
   @override
   void initState() {
@@ -49,8 +44,6 @@ class _SideBarState extends State<SideBar> {
   Widget build(BuildContext context) {
     // _getEmp();
     // print("nama: ${nama}");
-    // print("emp_number: ${emp_number}");
-    // print("img_url: ${img_url}");
     return Drawer(
       child: Container(
         child: ListView(
@@ -59,61 +52,51 @@ class _SideBarState extends State<SideBar> {
               children: [
                 Container(
                   height: 220,
-                  child: DrawerHeader(
-                      child: FutureBuilder(
-                          future: _getEmp(),
-                          builder: (context, snapshot) {
-                            return Column(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    padding: EdgeInsets.all(5.0),
-                                    width: double.infinity,
-                                    // height: 200.0,
-                                    decoration: BoxDecoration(
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.grey.withOpacity(0.7),
-                                            spreadRadius: 5,
-                                            blurRadius: 7,
-                                            offset: Offset(0, 3))
-                                      ],
-                                      borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(225.0),
-                                        bottomRight: Radius.circular(225.0),
-                                      ),
-                                      color: Colors.teal,
-                                    ),
-                                    child: Container(
-                                      height: 25,
-                                      width: 25,
-                                      decoration: BoxDecoration(
-                                        // image: DecorationImage(
-                                        //   image: (img_url == null)
-                                        //       ? Image.asset(
-                                        //           'assets/images/cp_logo.png')
-                                        //       : NetworkImage(img_url),
-                                        //   fit: BoxFit.cover,
-                                        // ),
-                                        shape: BoxShape.circle,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Text(
-                                  (nama ?? 'Fetching'),
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 24),
-                                ),
-                                Text(
-                                  (emp_number ?? 'fetching'),
-                                  style: TextStyle(fontSize: 16),
-                                ),
+                  child: DrawerHeader(child: Builder(builder: (context) {
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.all(5.0),
+                            width: double.infinity,
+                            // height: 200.0,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.grey.withOpacity(0.7),
+                                    spreadRadius: 5,
+                                    blurRadius: 7,
+                                    offset: Offset(0, 3))
                               ],
-                            );
-                          })),
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(225.0),
+                                bottomRight: Radius.circular(225.0),
+                              ),
+                              color: Colors.teal,
+                            ),
+                            child: Container(
+                              height: 25,
+                              width: 25,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.black,
+                              ),
+                              // child: Image.network(img_url),
+                            ),
+                          ),
+                        ),
+                        Text(
+                          "nama",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 24),
+                        ),
+                        Text(
+                          "emp_number",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    );
+                  })),
                 ),
               ],
             ),
