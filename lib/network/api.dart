@@ -35,7 +35,24 @@ class Network {
     );
   }
 
+    searchData(apiURL, query) async {
+    var fullUrl = _url + apiURL;
+    await _getToken();
+    return await http.get(
+      Uri.parse(fullUrl),
+      headers: _setHeaders(),
+    );
+  }
+
   sendData(apiURL, body) async {
+    var fullUrl = _url + apiURL;
+    await _getToken();
+    print(token);
+    return await http.post(Uri.parse(fullUrl),
+        body: body, headers: {'Authorization': 'Bearer $token'});
+  }
+
+  getNama(apiURL, body) async {
     var fullUrl = _url + apiURL;
     await _getToken();
     print(token);

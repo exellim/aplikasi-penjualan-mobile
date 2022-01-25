@@ -29,6 +29,8 @@ class _HomeState extends State<Home> {
             icon: Icon(Icons.power_settings_new),
             onPressed: () {
               logout();
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => Login()));
             },
           )
         ],
@@ -173,7 +175,7 @@ class _HomeState extends State<Home> {
       //     context, MaterialPageRoute(builder: (context) => Login()));
       // Navigator.pushReplacement(context,
       //     MaterialPageRoute(builder: (BuildContext context) => Login()));
-      
+
     }
   }
 }

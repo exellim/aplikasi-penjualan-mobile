@@ -1,11 +1,23 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../network/api.dart';
+
 PlanModel planModelFromJson(String str) => PlanModel.fromJson(json.decode(str));
 
 String planModelToJson(PlanModel data) => json.encode(data.toJson());
 
 class PlanModel {
+  int id;
+  String nama;
+  String tujuan;
+  DateTime tanggalTujuan;
+  String jamMulai;
+  dynamic jamSelesai;
+  dynamic catatan;
+  DateTime createdAt;
+  DateTime updatedAt;
+
   PlanModel({
     this.id,
     this.nama,
@@ -17,16 +29,6 @@ class PlanModel {
     this.createdAt,
     this.updatedAt,
   });
-
-  int id;
-  String nama;
-  String tujuan;
-  DateTime tanggalTujuan;
-  String jamMulai;
-  dynamic jamSelesai;
-  dynamic catatan;
-  DateTime createdAt;
-  DateTime updatedAt;
 
   factory PlanModel.fromJson(Map<String, dynamic> json) => PlanModel(
         id: json["id"],
@@ -55,6 +57,17 @@ class PlanModel {
 }
 
 class PostPlan {
+
+  int id;
+  String nama;
+  String tujuan_value;
+  String kunjungan_value;
+  DateTime tanggalTujuan;
+  String jamMulai;
+  String jamSelesai;
+  String catatan;
+  String emp_number;
+
   PostPlan({
     this.id,
     this.nama,
@@ -64,16 +77,8 @@ class PostPlan {
     this.jamMulai,
     this.jamSelesai,
     this.catatan,
+    this.emp_number,
   });
-
-  int id;
-  String nama;
-  String tujuan_value;
-  String kunjungan_value;
-  DateTime tanggalTujuan;
-  String jamMulai;
-  dynamic jamSelesai;
-  dynamic catatan;
 
   factory PostPlan.createPostPlan(Map<String, dynamic> json) {
     return PostPlan(
@@ -85,26 +90,32 @@ class PostPlan {
       jamMulai: json["jam_mulai"],
       jamSelesai: json["jam_selesai"],
       catatan: json["catatan"],
+      emp_number: json["emp_number"],
     );
   }
 
   static Future<PostPlan> connectApi(
       String nama,
-      String tujuan,
       String tanggalTujuan,
       String jamMulai,
-      dynamic jamSelesai,
-      dynamic catatan) async {
-    String url = "http://127.0.0.1:8000/api/kunjungan/add";
+      String jamSelesai,
+      String catatan,
+      String kunjungan_value,
+      String tujuan_value,
+      String emp_number) async {
+    final String url = 'kunjungan/add';
 
-    var result = await http.post(Uri.parse(url), body: {
+    Map<String, dynamic> bodies = ({
       "nama": nama,
-      "tujuan": tujuan,
-      "tanggalTujuan": tanggalTujuan,
-      "jamMulai": jamMulai,
-      "jamSelesai": jamSelesai,
+      "tanggal_tujuan": tanggalTujuan,
+      "jam_mulai": jamMulai,
+      "jam_selesai": jamSelesai,
       "catatan": catatan,
+      "kunjungan_value": kunjungan_value,
+      "tujuan_value": tujuan_value,
+      "emp_number": emp_number,
     });
+    var result = Network().sendData(url, bodies);
     var jsonObject = json.decode(result.body);
 
     return PostPlan.createPostPlan(jsonObject);

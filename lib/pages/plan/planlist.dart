@@ -56,46 +56,82 @@ class _PlanListState extends State<PlanList> {
                       itemBuilder: (context, index) {
                         return Container(
                           child: Card(
-                            margin: EdgeInsets.all(5.0),
+                            margin: EdgeInsets.all(10.0),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0)),
                             elevation: 5,
-                            child: Row(
-                              // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.all(15.0),
-                                      child: Column(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Text(
+                                        snapshot.data['data'][index]['nama'],
+                                        textScaleFactor: 1.2,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Column(
                                         children: [
-                                          Text(
-                                            snapshot.data['data'][index]
-                                                ['nama'],
-                                            textScaleFactor: 1.2,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 8.0),
+                                                    child: Text(
+                                                      "Kunjungan:",
+                                                      style: TextStyle(
+                                                          fontSize: 16.0),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    snapshot.data['data'][index]
+                                                        ['tujuan_value'],
+                                                    style: TextStyle(
+                                                        fontSize: 14.0),
+                                                  ),
+                                                ]),
                                           ),
-                                          Text(
-                                            snapshot.data['data'][index]
-                                                    ['tujuan']
-                                                .toString(),
-                                            textScaleFactor: 1.2,
-                                          ),
-                                          Text(
-                                            snapshot.data['data'][index]
-                                                ['tanggal_tujuan'],
-                                            textScaleFactor: 1.2,
-                                          )
+                                          Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 8.0),
+                                                  child: Text(
+                                                    'Kunjungan:',
+                                                    style: TextStyle(
+                                                        fontSize: 16.0),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  snapshot.data['data'][index]
+                                                      ['kunjungan_value'],
+                                                  style:
+                                                      TextStyle(fontSize: 14.0),
+                                                ),
+                                              ]),
                                         ],
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                      Text(
+                                        snapshot.data['data'][index]
+                                            ['tanggal_tujuan'],
+                                        textScaleFactor: 1.2,
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         );

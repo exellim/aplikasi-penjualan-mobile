@@ -57,17 +57,7 @@ class _CreatePlanState extends State<CreatePlan> {
     timeMulai = TimeOfDay.now();
     timeSelesai = TimeOfDay.now();
     _getNama();
-    _getEmp();
   }
-
-  // Future getEmpNumber() async {
-  //   var response = Network().getData('profile');
-  //   var body = jsonDecode(response);
-
-  //   setState(() {
-  //     emp_number = body['emp_number'];
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +99,7 @@ class _CreatePlanState extends State<CreatePlan> {
                                         color: Colors.black54,
                                         fontSize: 16,
                                       ),
-                                      hint: Text('Pilih Customer'),
+                                      hint: Text('Select State'),
                                       onChanged: (String newValue) {
                                         setState(() {
                                           _nama = newValue;
@@ -134,7 +124,7 @@ class _CreatePlanState extends State<CreatePlan> {
                           ),
                         ),
                         SizedBox(
-                          height: 10,
+                          height: 30,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -314,17 +304,10 @@ class _CreatePlanState extends State<CreatePlan> {
                               child: new TextFormField(
                                 maxLines: 8,
                                 onChanged: (String value) {
-                                  if (value == null || value == '') {
-                                    setState(() {
-                                      _catatan = value;
-                                      catatan = _catatan;
-                                    });
-                                  } else {
-                                    setState(() {
-                                      _catatan = value;
-                                      catatan = _catatan;
-                                    });
-                                  }
+                                  setState(() {
+                                    _catatan = value;
+                                    catatan = _catatan;
+                                  });
                                 },
                                 // expands: true,
                                 decoration: new InputDecoration(
@@ -364,7 +347,9 @@ class _CreatePlanState extends State<CreatePlan> {
                               print(jamSelesai);
                               print(emp_number);
                               if (formKey.currentState.validate()) {
-                                // emp_number = getEmpNumber().toString();
+                                setState(() {
+                                  emp_number = getEmpNumber().toString();
+                                });
                                 AwesomeDialog(
                                     context: context,
                                     animType: AnimType.LEFTSLIDE,
@@ -475,7 +460,7 @@ class _CreatePlanState extends State<CreatePlan> {
       kunjungan = 'ya';
       kunjungan_value = kunjungan;
       print(kunjungan_value);
-    } else if (value != true || value == null) {
+    } else {
       kunjungan = 'tidak';
       kunjungan_value = kunjungan;
       print(kunjungan_value);
@@ -490,7 +475,7 @@ class _CreatePlanState extends State<CreatePlan> {
       penagihan = 'ya';
       tujuan_value = penagihan;
       print(tujuan_value);
-    } else if (value != true || value == null) {
+    } else {
       penagihan = 'tidak';
       tujuan_value = penagihan;
       print(tujuan_value);
@@ -525,6 +510,16 @@ class _CreatePlanState extends State<CreatePlan> {
     }
   }
 
+  Future getEmpNumber() async {
+    var respone = Network().getData('profile');
+    var body = jsonDecode(respone.body);
+
+    setState(() {
+      emp_number = body['data']['emp_number'];
+    });
+    return body;
+  }
+
   String url = 'customer';
   Future<String> _getNama() async {
     await Network().getData(url).then((response) {
@@ -532,16 +527,6 @@ class _CreatePlanState extends State<CreatePlan> {
 
       setState(() {
         namaList = data['data'];
-      });
-    });
-  }
-
-  Future<String> _getEmp() async {
-    await Network().getData('profile').then((response) {
-      var data = json.decode(response.body);
-
-      setState(() {
-        emp_number = data['emp_number'];
       });
     });
   }

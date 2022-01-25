@@ -35,6 +35,7 @@ class _CustomerListState extends State<CustomerList> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Customer List"),
+          actions: [],
         ),
         drawer: SideBar(),
         floatingActionButton: FloatingActionButton(
