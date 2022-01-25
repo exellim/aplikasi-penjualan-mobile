@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:salessystem/materials/sidebar.dart';
 import 'package:http/http.dart' as http;
 import 'package:salessystem/models/customerModel.dart';
@@ -47,63 +48,74 @@ class _CustomerListState extends State<CustomerList> {
           },
         ),
         resizeToAvoidBottomInset: true,
-        body: FutureBuilder(
-            future: getCustomer(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return GridView.count(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 2.0,
-                  crossAxisSpacing: 2.0,
-                  children:
-                      List.generate(snapshot.data['data'].length, (index) {
-                    return new Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0)),
-                      elevation: 10,
-                      child: new Container(
-                        alignment: Alignment.center,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            AutoSizeText(
-                              snapshot.data['data'][index]['nama'],
-                              style: TextStyle(
-                                fontSize: 20,
-                              ),
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
+        body: Container(
+          child: FutureBuilder(
+              future: getCustomer(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                      itemCount: snapshot.data['data'].length,
+                      padding: const EdgeInsets.all(10.0),
+                      itemBuilder: (context, index) {
+                        return Card(
+                          elevation: 8,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AutoSizeText(
+                                  snapshot.data['data'][index]['nama'],
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                  textAlign: TextAlign.start,
+                                  maxLines: 2,
+                                ),
+                                SizedBox(
+                                  height: 5.0,
+                                ),
+                                Text(
+                                  snapshot.data['data'][index]['alamat_rumah'],
+                                  maxLines: 2,
+                                  softWrap: true,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.start,
+                                ),
+                                SizedBox(
+                                  height: 5.0,
+                                ),
+                                Text(
+                                  snapshot.data['data'][index]['handphone'],
+                                  textAlign: TextAlign.start,
+                                  textScaleFactor: 1.2,
+                                )
+                              ],
                             ),
-                            SizedBox(
-                              height: 5.0,
-                            ),
-                            Flexible(
-                              child: Text(
-                                snapshot.data['data'][index]['alamat_rumah'],
-                                maxLines: 2,
-                                softWrap: true,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 5.0,
-                            ),
-                            Text(
-                              snapshot.data['data'][index]['handphone'],
-                              textAlign: TextAlign.center,
-                              textScaleFactor: 1.2,
-                            )
-                          ],
-                        ),
+                          ),
+                        );
+                      });
+                } else {
+                  return SafeArea(
+                    child: Center(
+                        child: Container(
+                      padding: const EdgeInsets.all(0.0),
+                      width: 120.0,
+                      height: 120.0,
+                      child: Column(
+                        children: [
+                          SpinKitFadingCircle(
+                            color: Colors.teal,
+                          ),
+                          Text('Loading...')
+                        ],
                       ),
-                    );
-                  }),
-                );
-              } else {
-                return Text("No data received!");
-              }
-            }));
+                    )),
+                  );
+                }
+              }),
+        ));
   }
 
   void _navigateToNextScreen(BuildContext context) {
@@ -118,3 +130,13 @@ void _getData() async {
   return body;
 //  var res =  Network.getData('customer');
 }
+
+final spinkit = SpinKitFadingCircle(
+  itemBuilder: (BuildContext context, int index) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: index.isEven ? Colors.red : Colors.green,
+      ),
+    );
+  },
+);

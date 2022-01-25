@@ -22,155 +22,182 @@ class SideBar extends StatefulWidget {
 }
 
 class _SideBarState extends State<SideBar> {
+  String emp_number;
+  String nama;
+  var img_url;
+
+  Future<String> _getEmp() async {
+    await Network().getData('profile').then((response) {
+      var data = json.decode(response.body);
+
+      setState(() {
+        emp_number = data['emp_number'];
+        nama = data['nama'];
+        img_url = data['img_url'];
+      });
+      print(emp_number);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getEmp();
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("nama: ${nama}");
     return Drawer(
-      child: ListView(
-        children: <Widget>[
-          Column(
-            children: [
-              Container(
-                height: 220,
-                child: DrawerHeader(
-                    child: Column(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.all(5.0),
-                        width: double.infinity,
-                        // height: 200.0,
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.grey.withOpacity(0.7),
-                                spreadRadius: 5,
-                                blurRadius: 7,
-                                offset: Offset(0, 3))
-                          ],
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(225.0),
-                            bottomRight: Radius.circular(225.0),
-                          ),
-                          color: Colors.teal,
-                        ),
-                        child: Container(
-                          height: 25,
-                          width: 25,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.black,
-                          ),
-                          // child: Image.asset("/images/cp_logo.png"),
-                        ),
-                      ),
-                    ),
-                    Text(
-                      "Username",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-                    ),
-                    Text(
-                      "K0-1123",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ],
-                )),
-              ),
-            ],
-          ),
-
-          // Home Page
-          ListTile(
-            title: Text("Home"),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Home()),
-              );
-            },
-          ),
-
-          // Review Plan
-          ListTile(
-            title: Text("Review Plan"),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => PlanList()),
-              );
-            },
-          ),
-
-          // Customer
-          ListTile(
-            title: Text("Customer"),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CustomerList()),
-              );
-            },
-          ),
-
-          // Order
-          ListTile(
-            title: Text("Order"),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Order()),
-              );
-            },
-          ),
-
-          // Tagihan
-          ListTile(
-            title: Text("Tagihan"),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Tagihan()),
-              );
-            },
-          ),
-
-          // Complaint
-          ListTile(
-            title: Text("Complaint"),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Complaint()),
-              );
-            },
-          ),
-
-          // SalesVisit
-          ListTile(
-            title: Text("Sales Visit"),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SalesVisit()),
-              );
-            },
-          ),
-
-          // Logout
-          ListTile(
-            title: Row(
+      child: Container(
+        child: ListView(
+          children: <Widget>[
+            Column(
               children: [
-                Text("LogOut"),
-                Icon(Icons.logout_sharp),
+                Container(
+                  height: 220,
+                  child: DrawerHeader(child: Builder(builder: (context) {
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.all(5.0),
+                            width: double.infinity,
+                            // height: 200.0,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.grey.withOpacity(0.7),
+                                    spreadRadius: 5,
+                                    blurRadius: 7,
+                                    offset: Offset(0, 3))
+                              ],
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(225.0),
+                                bottomRight: Radius.circular(225.0),
+                              ),
+                              color: Colors.teal,
+                            ),
+                            child: Container(
+                              height: 25,
+                              width: 25,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.black,
+                              ),
+                              // child: Image.network(img_url),
+                            ),
+                          ),
+                        ),
+                        Text(
+                          "nama",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 24),
+                        ),
+                        Text(
+                          "emp_number",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    );
+                  })),
+                ),
               ],
             ),
-            onTap: () {
-              logout();
-                    Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Login()));
-            },
-          ),
-        ],
+
+            // Home Page
+            ListTile(
+              title: Text("Home"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Home()),
+                );
+              },
+            ),
+
+            // Review Plan
+            ListTile(
+              title: Text("Review Plan"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PlanList()),
+                );
+              },
+            ),
+
+            // Customer
+            ListTile(
+              title: Text("Customer"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CustomerList()),
+                );
+              },
+            ),
+
+            // Order
+            ListTile(
+              title: Text("Order"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Order()),
+                );
+              },
+            ),
+
+            // Tagihan
+            ListTile(
+              title: Text("Tagihan"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Tagihan()),
+                );
+              },
+            ),
+
+            // Complaint
+            ListTile(
+              title: Text("Complaint"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Complaint()),
+                );
+              },
+            ),
+
+            // SalesVisit
+            ListTile(
+              title: Text("Sales Visit"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SalesVisit()),
+                );
+              },
+            ),
+
+            // Logout
+            ListTile(
+              title: Row(
+                children: [
+                  Text("LogOut"),
+                  Icon(Icons.logout_sharp),
+                ],
+              ),
+              onTap: () {
+                logout();
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => Login()));
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

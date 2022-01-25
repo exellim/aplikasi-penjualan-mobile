@@ -1,5 +1,7 @@
 // import 'package:auto_size_text/auto_size_text.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 // import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
@@ -23,126 +25,124 @@ class _PlanListState extends State<PlanList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Plan List"),
-      ),
-      drawer: SideBar(),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(
-          Icons.add,
+        appBar: AppBar(
+          title: Text("Plan List"),
         ),
-        onPressed: () {
-          _navigateToNextScreen(context);
-        },
-      ),
-      body: FutureBuilder(
-          future: getPlan(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: Row(
-                      children: [
-                        Text("Plan Finished: "),
-                        Text(snapshot.data['data'].length.toString()),
-                      ],
-                    ),
-                  ),
-                  ListView.builder(
-                      shrinkWrap: true,
+        drawer: SideBar(),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(
+            Icons.add,
+          ),
+          onPressed: () {
+            _navigateToNextScreen(context);
+          },
+        ),
+        body: Container(
+          child: FutureBuilder(
+              future: getPlan(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
                       itemCount: snapshot.data['data'].length,
+                      padding: const EdgeInsets.all(10.0),
                       itemBuilder: (context, index) {
-                        return Container(
-                          child: Card(
-                            margin: EdgeInsets.all(10.0),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0)),
-                            elevation: 5,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Text(
-                                        snapshot.data['data'][index]['nama'],
-                                        textScaleFactor: 1.2,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Column(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            right: 8.0),
-                                                    child: Text(
-                                                      "Kunjungan:",
-                                                      style: TextStyle(
-                                                          fontSize: 16.0),
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    snapshot.data['data'][index]
-                                                        ['tujuan_value'],
-                                                    style: TextStyle(
-                                                        fontSize: 14.0),
-                                                  ),
-                                                ]),
-                                          ),
-                                          Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          right: 8.0),
-                                                  child: Text(
-                                                    'Kunjungan:',
-                                                    style: TextStyle(
-                                                        fontSize: 16.0),
-                                                  ),
-                                                ),
-                                                Text(
-                                                  snapshot.data['data'][index]
-                                                      ['kunjungan_value'],
-                                                  style:
-                                                      TextStyle(fontSize: 14.0),
-                                                ),
-                                              ]),
-                                        ],
-                                      ),
-                                      Text(
-                                        snapshot.data['data'][index]
-                                            ['tanggal_tujuan'],
-                                        textScaleFactor: 1.2,
-                                      )
-                                    ],
+                        return Card(
+                          elevation: 8,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AutoSizeText(
+                                  snapshot.data['data'][index]['nama'],
+                                  style: TextStyle(
+                                    fontSize: 20,
                                   ),
-                                ],
-                              ),
+                                  textAlign: TextAlign.start,
+                                  maxLines: 2,
+                                ),
+                                SizedBox(
+                                  height: 5.0,
+                                ),
+                                Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "Kunjungan:",
+                                          maxLines: 2,
+                                          softWrap: true,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.start,
+                                        ),
+                                        SizedBox(width: 8.0),
+                                        Text(
+                                          snapshot.data['data'][index]
+                                              ['kunjungan_value'],
+                                          maxLines: 2,
+                                          softWrap: true,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "Penagihan:",
+                                          maxLines: 2,
+                                          softWrap: true,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.start,
+                                        ),
+                                        SizedBox(width: 8.0),
+                                        Text(
+                                          snapshot.data['data'][index]
+                                              ['tujuan_value'],
+                                          maxLines: 2,
+                                          softWrap: true,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 5.0,
+                                ),
+                                Text(
+                                  snapshot.data['data'][index]
+                                      ['tanggal_tujuan'],
+                                  textAlign: TextAlign.start,
+                                  textScaleFactor: 1.2,
+                                )
+                              ],
                             ),
                           ),
                         );
-                      }),
-                ],
-              );
-            } else {
-              return Text("No data received!");
-            }
-          }),
-    );
+                      });
+                } else {
+                  return SafeArea(
+                    child: Center(
+                        child: Container(
+                      padding: const EdgeInsets.all(0.0),
+                      width: 120.0,
+                      height: 120.0,
+                      child: Column(
+                        children: [
+                          SpinKitFadingCircle(
+                            color: Colors.teal,
+                          ),
+                          Text('Loading...')
+                        ],
+                      ),
+                    )),
+                  );
+                }
+              }),
+        ));
   }
 }
 

@@ -391,8 +391,8 @@ class _CreatePlanState extends State<CreatePlan> {
                                         (jamSelesai ??
                                             "${timeSelesai.hour}:${timeSelesai.minute}"),
                                         (catatan ?? 'Tidak ada Catatan'),
-                                        (kunjungan_value ?? 'no'),
-                                        (tujuan_value ?? 'no'),
+                                        (kunjungan_value ?? 'tidak'),
+                                        (tujuan_value ?? 'tidak'),
                                         emp_number)
                                     .then((value) {
                                   setState(() {});
