@@ -9,14 +9,14 @@ import 'package:salessystem/materials/sidebar.dart';
 import 'package:salessystem/pages/plan/createplan.dart';
 import '../../network/api.dart';
 
-class PlanList extends StatefulWidget {
-  PlanList({Key key}) : super(key: key);
+class PlanListBak extends StatefulWidget {
+  PlanListBak({Key key}) : super(key: key);
 
   @override
-  _PlanListState createState() => _PlanListState();
+  _PlanListBakState createState() => _PlanListBakState();
 }
 
-class _PlanListState extends State<PlanList> {
+class _PlanListBakState extends State<PlanListBak> {
   getPlan() async {
     return _getData();
   }

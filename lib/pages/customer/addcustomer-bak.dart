@@ -4,14 +4,14 @@ import 'package:salessystem/models/customermodel.dart';
 import 'package:salessystem/pages/customer/customer.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 
-class AddCustomer extends StatefulWidget {
-  AddCustomer({Key key}) : super(key: key);
+class AddCustomerBak extends StatefulWidget {
+  AddCustomerBak({Key key}) : super(key: key);
 
   @override
-  _AddCustomerState createState() => _AddCustomerState();
+  _AddCustomerBakState createState() => _AddCustomerBakState();
 }
 
-class _AddCustomerState extends State<AddCustomer> {
+class _AddCustomerBakState extends State<AddCustomerBak> {
   final formKey = GlobalKey<FormState>(); //key for form
   String nama, alamat, handphone;
   PostCustomer postResult = null;

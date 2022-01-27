@@ -9,16 +9,16 @@ import 'dart:async';
 import 'package:salessystem/pages/customer/addcustomer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class CustomerList extends StatefulWidget {
-  const CustomerList({
+class CustomerListBak extends StatefulWidget {
+  const CustomerListBak({
     Key key,
   }) : super(key: key);
 
   @override
-  State<CustomerList> createState() => _CustomerListState();
+  State<CustomerListBak> createState() => _CustomerListBakState();
 }
 
-class _CustomerListState extends State<CustomerList> {
+class _CustomerListBakState extends State<CustomerListBak> {
   String query = '';
   final String url = 'customer/';
 

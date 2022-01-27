@@ -59,7 +59,7 @@ class _CheckAuthState extends State<CheckAuth> {
   Widget build(BuildContext context) {
     Widget child;
     if (isAuth) {
-      child = SuratJalan();
+      child = Home();
     } else {
       child = Login();
     }

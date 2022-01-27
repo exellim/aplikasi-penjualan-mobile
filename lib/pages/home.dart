@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:salessystem/materials/sidebar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:salessystem/pages/account/login.dart';
+import 'package:salessystem/pages/customer/customer.dart';
+import 'package:salessystem/pages/order.dart';
+import 'package:salessystem/pages/plan/planlist.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../network/api.dart';
@@ -22,145 +25,159 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     // Network().getData('/profile');
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Home"),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.power_settings_new),
-            onPressed: () {
-              logout();
-              Navigator.pushReplacement(
-                  context, MaterialPageRoute(builder: (context) => Login()));
-            },
-          )
-        ],
-      ),
-      drawer: SideBar(),
-      body: FutureBuilder(
-          // future: Network().getData('/profile'),
-          builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return Container(
-            child: ListView.builder(
-              itemCount: 1,
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    // Profile Card
-                    Center(
-                        child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Card(
-                        elevation: 8.0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              gradient: LinearGradient(
-                                  colors: [
-                                    Colors.green,
-                                    Color.fromARGB(255, 212, 233, 28)
-                                  ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Image.network(
-                                    snapshot.data[0][index]['image_url']),
-                                Column(
-                                  children: [
-                                    Text(
-                                      snapshot.data['data']['name'],
-                                      textScaleFactor: 3.0,
-                                      style: GoogleFonts.openSans(
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                    Text(
-                                      snapshot.data['data']['emp_number'],
-                                      textScaleFactor: 1.2,
-                                      style: GoogleFonts.openSans(
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+        appBar: AppBar(
+          title: Text("Home"),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.power_settings_new),
+              onPressed: () {
+                logout();
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => Login()));
+              },
+            )
+          ],
+        ),
+        drawer: SideBar(),
+        body: Column(
+          children: [
+            SafeArea(
+                child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Wrap(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(color: Colors.grey),
+                        height: 500,
+                        width: 400,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Expanded(child: Text("Graph container")),
+                            Expanded(child: Text("Graph container")),
+                            Expanded(child: Text("Graph container")),
+                            Expanded(child: Text("Graph container")),
+                            Expanded(child: Text("Graph container")),
+                          ],
                         ),
                       ),
-                    )),
-
-                    // Body
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            SizedBox(
-                              child: Card(
-                                child: Column(children: [
-                                  Text(
-                                    'Address',
-                                    textScaleFactor: 2.2,
-                                    style: GoogleFonts.openSans(
-                                      fontWeight: FontWeight.w700,
-                                    ),
+                      Divider(
+                        thickness: 1.0,
+                        color: Colors.grey,
+                      ),
+                      // buatKotak(Colors.greenAccent, 400),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: MaterialButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                              ),
+                              color: Colors.teal.shade300,
+                              padding: EdgeInsets.all(20),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => PlanList()),
+                                );
+                              },
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.event_note,
+                                    size: 50,
+                                    color: Colors.white,
                                   ),
+                                  Divider(thickness: 2, color: Colors.white),
                                   Text(
-                                    snapshot.data['data']['address'],
-                                    textScaleFactor: 1.0,
-                                    style: GoogleFonts.openSans(
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ]),
+                                    "Review Plan",
+                                    style: TextStyle(color: Colors.white),
+                                    textAlign: TextAlign.center,
+                                  )
+                                ],
                               ),
                             ),
-                            SizedBox(
-                              child: Card(
-                                child: Column(children: [
-                                  Center(
-                                    child: Text(
-                                      'Phone',
-                                      textScaleFactor: 2.2,
-                                      style: GoogleFonts.openSans(
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
+                          ),
+                          SizedBox(width: 5),
+                          Expanded(
+                            child: MaterialButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                              ),
+                              color: Colors.teal.shade700,
+                              padding: EdgeInsets.all(20),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => CustomerList()),
+                                );
+                              },
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.person,
+                                    size: 50,
+                                    color: Colors.white,
                                   ),
+                                  Divider(thickness: 2, color: Colors.white),
                                   Text(
-                                    snapshot.data['data']['phone'],
-                                    textScaleFactor: 1.0,
-                                    style: GoogleFonts.openSans(
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ]),
+                                    "Customers\n",
+                                    style: TextStyle(color: Colors.white),
+                                    textAlign: TextAlign.center,
+                                  )
+                                ],
                               ),
                             ),
-                          ],
-                        )
-                      ],
-                    )
-                  ],
-                );
-              },
-            ),
-          );
-        } else {
-          return Center(child: Text("No data received!"));
-        }
-      }),
-    );
+                          ),
+                          SizedBox(width: 5),
+                          Expanded(
+                            child: MaterialButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                              ),
+                              color: Colors.teal,
+                              padding: EdgeInsets.all(20),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Order()),
+                                );
+                              },
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.post_add_rounded,
+                                    size: 50,
+                                    color: Colors.white,
+                                  ),
+                                  Divider(thickness: 2, color: Colors.white),
+                                  Text(
+                                    "Order\n",
+                                    style: TextStyle(color: Colors.white),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            )),
+          ],
+        ));
   }
 
   void logout() async {
@@ -177,5 +194,14 @@ class _HomeState extends State<Home> {
       //     MaterialPageRoute(builder: (BuildContext context) => Login()));
 
     }
+  }
+
+  Widget buatKotak(Color warna, double ukuran) {
+    return Container(
+      decoration: BoxDecoration(color: warna),
+      height: ukuran,
+      width: ukuran,
+      margin: EdgeInsets.all(10),
+    );
   }
 }

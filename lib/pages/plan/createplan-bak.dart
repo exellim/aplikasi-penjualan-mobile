@@ -8,14 +8,14 @@ import 'package:salessystem/models/planmodel.dart';
 import 'package:salessystem/network/api.dart';
 import 'package:salessystem/pages/plan/planlist.dart';
 
-class CreatePlan extends StatefulWidget {
-  CreatePlan({Key key}) : super(key: key);
+class CreatePlanBak extends StatefulWidget {
+  CreatePlanBak({Key key}) : super(key: key);
 
   @override
-  _CreatePlanState createState() => _CreatePlanState();
+  _CreatePlanBakState createState() => _CreatePlanBakState();
 }
 
-class _CreatePlanState extends State<CreatePlan> {
+class _CreatePlanBakState extends State<CreatePlanBak> {
   final formKey = GlobalKey<FormState>(); //key for form
 
   String nama,
