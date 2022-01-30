@@ -1,12 +1,9 @@
-import 'dart:io';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:salessystem/network/api.dart';
 import 'register.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../home.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 // import '../../network_utils/api.dart';
 
 class Login extends StatefulWidget {
@@ -17,7 +14,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
-  String email, password;
+  late String email, password;
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _secureText = true;
@@ -32,7 +29,7 @@ class _LoginState extends State<Login> {
     final snackBar = SnackBar(
       content: Text(msg),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    _scaffoldKey.currentState!.showSnackBar(snackBar);
   }
 
   @override
@@ -75,7 +72,7 @@ class _LoginState extends State<Login> {
                               hintText: "Email",
                             ),
                             validator: (emailValue) {
-                              if (emailValue.isEmpty) {
+                              if (emailValue!.isEmpty) {
                                 return 'Please enter your email';
                               }
                               email = emailValue;
@@ -96,7 +93,7 @@ class _LoginState extends State<Login> {
                               ),
                             ),
                             validator: (passwordValue) {
-                              if (passwordValue.isEmpty) {
+                              if (passwordValue!.isEmpty) {
                                 return 'Please enter your password';
                               }
                               password = passwordValue;
@@ -123,7 +120,7 @@ class _LoginState extends State<Login> {
                           shape: new RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(20.0)),
                           onPressed: () {
-                            if (_formKey.currentState.validate()) {
+                            if (_formKey.currentState!.validate()) {
                               _login();
                             }
                           },

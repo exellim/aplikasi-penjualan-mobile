@@ -8,7 +8,7 @@ class Network {
 
   _getToken() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
-    token = jsonDecode(localStorage.getString('token'));
+    token = jsonDecode(localStorage.getString('token').toString());
     print(token);
   }
 
@@ -19,13 +19,6 @@ class Network {
         body: jsonEncode(data), headers: _setHeaders());
   }
 
-  // sendData(data, apiURL) async {
-  //   var fullUrl = _url + apiURL;
-  //   print(token);
-  //   return await http.post(Uri.parse(fullUrl),
-  //       body: jsonEncode(data), headers: _setHeaders());
-  // }
-
   getData(apiURL) async {
     var fullUrl = _url + apiURL;
     await _getToken();
@@ -35,7 +28,7 @@ class Network {
     );
   }
 
-    searchData(apiURL, query) async {
+  searchData(apiURL, query) async {
     var fullUrl = _url + apiURL;
     await _getToken();
     return await http.get(

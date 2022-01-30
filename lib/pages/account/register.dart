@@ -4,21 +4,20 @@ import 'login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../home.dart';
-import 'package:http/http.dart';
 
-class Register extends StatefulWidget{
+class Register extends StatefulWidget {
   @override
   _RegisterState createState() => _RegisterState();
 }
 
-class _RegisterState extends State<Register>{
+class _RegisterState extends State<Register> {
   bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _secureText = true;
-  String name, email, password;
+  late String name, email, password;
 
-  showHide(){
+  showHide() {
     setState(() {
       _secureText = !_secureText;
     });
@@ -28,11 +27,11 @@ class _RegisterState extends State<Register>{
     final snackBar = SnackBar(
       content: Text(msg),
     );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    _scaffoldKey.currentState!.showSnackBar(snackBar);
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Color(0xff151515),
@@ -65,62 +64,60 @@ class _RegisterState extends State<Register>{
                         ),
                         SizedBox(height: 18),
                         TextFormField(
-                          cursorColor: Colors.blue,
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                            hintText: "Full Name",
-                          ),
-                          validator: (nameValue){
-                            if(nameValue.isEmpty){
-                              return 'Please enter your full name';
-                            }
-                            name = nameValue;
-                            return null;
-                          }
-                        ),
-                        SizedBox(height: 12),
-                        TextFormField(
-                          cursorColor: Colors.blue,
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                            hintText: "Email",
-                          ),
-                          validator: (emailValue){
-                            if(emailValue.isEmpty){
-                              return 'Please enter your email';
-                            }
-                            email = emailValue;
-                            return null;
-                          }
-                        ),
-                        SizedBox(height: 12),
-                        TextFormField(
-                          cursorColor: Colors.blue,
-                          keyboardType: TextInputType.text,
-                          obscureText: _secureText,
-                          decoration: InputDecoration(
-                            hintText: "Password",
-                            suffixIcon: IconButton(
-                              onPressed: showHide,
-                              icon: Icon(_secureText
-                                  ? Icons.visibility_off
-                                  : Icons.visibility),
+                            cursorColor: Colors.blue,
+                            keyboardType: TextInputType.text,
+                            decoration: InputDecoration(
+                              hintText: "Full Name",
                             ),
-                          ),
-                          validator: (passwordValue){
-                            if(passwordValue.isEmpty){
-                              return 'Please enter your password';
-                            }
-                            password = passwordValue;
-                            return null;
-                          }
-                        ),
+                            validator: (nameValue) {
+                              if (nameValue!.isEmpty) {
+                                return 'Please enter your full name';
+                              }
+                              name = nameValue;
+                              return null;
+                            }),
+                        SizedBox(height: 12),
+                        TextFormField(
+                            cursorColor: Colors.blue,
+                            keyboardType: TextInputType.text,
+                            decoration: InputDecoration(
+                              hintText: "Email",
+                            ),
+                            validator: (emailValue) {
+                              if (emailValue!.isEmpty) {
+                                return 'Please enter your email';
+                              }
+                              email = emailValue;
+                              return null;
+                            }),
+                        SizedBox(height: 12),
+                        TextFormField(
+                            cursorColor: Colors.blue,
+                            keyboardType: TextInputType.text,
+                            obscureText: _secureText,
+                            decoration: InputDecoration(
+                              hintText: "Password",
+                              suffixIcon: IconButton(
+                                onPressed: showHide,
+                                icon: Icon(_secureText
+                                    ? Icons.visibility_off
+                                    : Icons.visibility),
+                              ),
+                            ),
+                            validator: (passwordValue) {
+                              if (passwordValue!.isEmpty) {
+                                return 'Please enter your password';
+                              }
+                              password = passwordValue;
+                              return null;
+                            }),
                         SizedBox(height: 12),
                         FlatButton(
                           child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 18, vertical: 10),
                             child: Text(
-                              _isLoading? 'Proccessing..' : 'Register',
+                              _isLoading ? 'Proccessing..' : 'Register',
                               textDirection: TextDirection.ltr,
                               style: TextStyle(
                                 color: Colors.white,
@@ -133,10 +130,9 @@ class _RegisterState extends State<Register>{
                           color: Colors.blueAccent,
                           disabledColor: Colors.grey,
                           shape: new RoundedRectangleBorder(
-                              borderRadius:
-                              new BorderRadius.circular(20.0)),
+                              borderRadius: new BorderRadius.circular(20.0)),
                           onPressed: () {
-                            if (_formKey.currentState.validate()) {
+                            if (_formKey.currentState!.validate()) {
                               _register();
                             }
                           },
@@ -146,7 +142,9 @@ class _RegisterState extends State<Register>{
                   ),
                 ),
               ),
-              SizedBox(height: 24,),
+              SizedBox(
+                height: 24,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -159,10 +157,8 @@ class _RegisterState extends State<Register>{
                   ),
                   InkWell(
                     onTap: () {
-                      Navigator.pop(
-                          context,
-                          new MaterialPageRoute(
-                              builder: (context) => Login()));
+                      Navigator.pop(context,
+                          new MaterialPageRoute(builder: (context) => Login()));
                     },
                     child: Text(
                       'Login',
@@ -187,32 +183,24 @@ class _RegisterState extends State<Register>{
     setState(() {
       _isLoading = true;
     });
-    var data = {
-      'name' : name,
-      'email' : email,
-      'password' : password
-    };
+    var data = {'name': name, 'email': email, 'password': password};
 
     var res = await Network().auth(data, '/register');
     var body = json.decode(res.body);
-    if(body['success']){
+    if (body['success']) {
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.setString('token', json.encode(body['token']));
       localStorage.setString('user', json.encode(body['user']));
       Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => Home()
-          ),
+        context,
+        MaterialPageRoute(builder: (context) => Home()),
       );
-    }else{
-      if(body['message']['name'] != null){
+    } else {
+      if (body['message']['name'] != null) {
         _showMsg(body['message']['name'][0].toString());
-      }
-      else if(body['message']['email'] != null){
+      } else if (body['message']['email'] != null) {
         _showMsg(body['message']['email'][0].toString());
-      }
-      else if(body['message']['password'] != null){
+      } else if (body['message']['password'] != null) {
         _showMsg(body['message']['password'][0].toString());
       }
     }

@@ -1,231 +1,219 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:salessystem/pages/complaint.dart';
-import 'package:salessystem/pages/customer/customer.dart';
+import 'package:salessystem/models/profilemodel.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:salessystem/pages/home.dart';
-import 'package:salessystem/pages/order.dart';
-import 'package:salessystem/pages/plan/planlist.dart';
-import 'package:salessystem/pages/reviewplan.dart';
-import 'package:salessystem/pages/salesvisit.dart';
-import 'package:salessystem/pages/tagihan.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../network/api.dart';
-import '../pages/account/login.dart';
 
 class SideBar extends StatefulWidget {
-  SideBar({Key key}) : super(key: key);
+  // Menu to page
+  final Function(int) onMenuTap;
+  SideBar({
+    Key? key,
+    required this.onMenuTap,
+  }) : super(key: key);
 
   @override
-  _SideBarState createState() => _SideBarState();
+  State<SideBar> createState() => _SideBarState();
 }
 
 class _SideBarState extends State<SideBar> {
-  Future<String> _getEmp() async {
-    await Network().getData('profile').then((response) {
-      var body = json.decode(response.body);
+  // Sidebar menu list Start
 
-      setState(() {
-        // print(body);
-        nama = body['name'];
-        emp_number = body['emp_number'];
-        img_url = body['img_url'];
-      });
-    });
-  }
+  // index start
+  int initialIndex = 0;
 
-  String emp_number;
-  String nama;
-  String img_url;
+  // Style active and inactive
+  final activeTextStyle = TextStyle(color: Colors.white);
 
+  final activeDecoration =
+      BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.teal);
+
+  final List<String> menuSidebar = [
+    "Home",
+    "Review Plan",
+    "Take Order",
+    "Tagihan",
+    "Complaint",
+    "Sales Visit",
+    "Absen",
+  ];
+
+  final List<IconData> icons = [
+    Icons.home_rounded,
+    Icons.event_note,
+    Icons.post_add_rounded,
+    Icons.paid,
+    Icons.chat_rounded,
+    Icons.business_center_rounded,
+    Icons.fingerprint_rounded
+  ];
+  // Sidebar Menu List End
+
+  // Text Style Start
+  TextStyle list = GoogleFonts.poppins(
+      fontWeight: FontWeight.w400,
+      fontStyle: FontStyle.normal,
+      fontSize: 13,
+      color: Colors.black54);
+  TextStyle font = GoogleFonts.poppins(
+      fontWeight: FontWeight.w400, fontStyle: FontStyle.normal);
+  TextStyle fontSemi = GoogleFonts.poppins(
+      fontWeight: FontWeight.w600, fontStyle: FontStyle.normal);
+  TextStyle fontBold = GoogleFonts.poppins(
+      fontWeight: FontWeight.w700, fontStyle: FontStyle.normal);
+  // Text Style end
+
+// Data caller start
+  UserModel? profile;
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-    _getEmp();
+
+    UserModel.connectToApi('profile').then((value) {
+      profile = value;
+      setState(() {});
+    });
   }
+  // Data Caller end
 
   @override
   Widget build(BuildContext context) {
-    // _getEmp();
-    // print("nama: ${nama}");
-    // print("emp_number: ${emp_number}");
-    // print("img_url: ${img_url}");
-    return Drawer(
-      child: Container(
-        child: ListView(
-          children: <Widget>[
-            Column(
-              children: [
-                Container(
-                  height: 220,
-                  child: DrawerHeader(
-                      child: FutureBuilder(
-                          future: _getEmp(),
-                          builder: (context, snapshot) {
-                            return Column(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    padding: EdgeInsets.all(5.0),
-                                    width: double.infinity,
-                                    // height: 200.0,
-                                    decoration: BoxDecoration(
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.grey.withOpacity(0.7),
-                                            spreadRadius: 5,
-                                            blurRadius: 7,
-                                            offset: Offset(0, 3))
-                                      ],
-                                      borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(225.0),
-                                        bottomRight: Radius.circular(225.0),
-                                      ),
-                                      color: Colors.teal,
-                                    ),
-                                    child: Container(
-                                      height: 25,
-                                      width: 25,
-                                      decoration: BoxDecoration(
-                                        // image: DecorationImage(
-                                        //   image: (img_url == null)
-                                        //       ? Image.asset(
-                                        //           'assets/images/cp_logo.png')
-                                        //       : NetworkImage(img_url),
-                                        //   fit: BoxFit.cover,
-                                        // ),
-                                        shape: BoxShape.circle,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Text(
-                                  (nama ?? 'Fetching'),
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 24),
-                                ),
-                                Text(
-                                  (emp_number ?? 'fetching'),
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                              ],
-                            );
-                          })),
-                ),
-              ],
-            ),
-
-            // Home Page
-            ListTile(
-              title: Text("Home"),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Home()),
-                );
-              },
-            ),
-
-            // Review Plan
-            ListTile(
-              title: Text("Review Plan"),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PlanList()),
-                );
-              },
-            ),
-
-            // Customer
-            ListTile(
-              title: Text("Customer"),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CustomerList()),
-                );
-              },
-            ),
-
-            // Order
-            ListTile(
-              title: Text("Order"),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Order()),
-                );
-              },
-            ),
-
-            // Tagihan
-            ListTile(
-              title: Text("Tagihan"),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Tagihan()),
-                );
-              },
-            ),
-
-            // Complaint
-            ListTile(
-              title: Text("Complaint"),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Complaint()),
-                );
-              },
-            ),
-
-            // SalesVisit
-            ListTile(
-              title: Text("Sales Visit"),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SalesVisit()),
-                );
-              },
-            ),
-
-            // Logout
-            ListTile(
-              title: Row(
+    return Container(
+      padding: EdgeInsets.only(top: 50, right: 10, left: 8),
+      color: Colors.white,
+      width: MediaQuery.of(context).size.width * 0.8,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 0),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          if (profile != null)
+            Container(
+              padding: EdgeInsets.only(top: 8, bottom: 8),
+              decoration: BoxDecoration(
+                  color: Colors.teal.shade200,
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(50),
+                      bottomRight: Radius.circular(50),
+                      topLeft: Radius.circular(15),
+                      bottomLeft: Radius.circular(15))),
+              child: Row(
                 children: [
-                  Text("LogOut"),
-                  Icon(Icons.logout_sharp),
+                  ClipRRect(
+                      borderRadius: BorderRadius.circular(15.0),
+                      child: Image.network(profile!.img_url.toString(),
+                          height: 100, width: 100)),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                          padding: EdgeInsets.only(left: 5.0),
+                          child: Text(
+                            profile!.name.toString(),
+                            style: fontSemi,
+                            textScaleFactor: 2,
+                          )),
+                      Padding(
+                          padding: EdgeInsets.only(left: 5.0),
+                          child: Text(
+                            profile!.emp_number.toString(),
+                            style: font,
+                            textScaleFactor: 1.5,
+                          )),
+                    ],
+                  )
                 ],
               ),
-              onTap: () {
-                logout();
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => Login()));
+            )
+          else
+            Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.asset("assets/images/cp_logo.png",
+                      height: 100, width: 100),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                        padding: EdgeInsets.only(left: 5.0),
+                        child: Text(
+                          "Name",
+                          style: fontSemi,
+                          textScaleFactor: 2,
+                        )),
+                    Padding(
+                        padding: EdgeInsets.only(left: 5.0),
+                        child: Text(
+                          "Emp_number",
+                          style: font,
+                          textScaleFactor: 1.5,
+                        )),
+                  ],
+                )
+              ],
+            ),
+          Divider(color: Colors.grey, thickness: 0.5),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Text("Menu"),
+          ),
+
+          //  Menu List
+          Column(
+            children: List.generate(
+              menuSidebar.length,
+              (index) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 1.0),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.decelerate,
+                    decoration: initialIndex == index
+                        ? activeDecoration
+                        : BoxDecoration(),
+                    child: ListTile(
+                      onTap: () {
+                        // print("$index " + menuSidebar[index]);
+                        setState(() {
+                          initialIndex = index;
+                        });
+                        widget.onMenuTap(index);
+                      },
+                      title: Text(
+                        menuSidebar[index],
+                        style: initialIndex == index ? activeTextStyle : list,
+                      ),
+                      leading: Icon(
+                        icons[index],
+                        color: initialIndex == index
+                            ? Colors.white
+                            : Colors.black54,
+                      ),
+                    ),
+                  ),
+                );
               },
             ),
-          ],
-        ),
+          ),
+          SizedBox(height: 10),
+          Divider(color: Colors.grey, thickness: 0.5),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Text("Other"),
+          ),
+
+          ListTile(
+            title: Text("Review Take order"),
+            leading: Icon(Icons.reviews),
+          ),
+          ListTile(
+            title: Text("Log Out"),
+            leading: Icon(Icons.logout_rounded),
+            textColor: Colors.red,
+            iconColor: Colors.red,
+          ),
+        ]),
       ),
     );
-  }
-
-  void logout() async {
-    var res = await Network().getData('/logout');
-    var body = json.decode(res.body);
-    if (body['message'] ==
-        'You have successfully logged out and the token was successfully deleted') {
-      SharedPreferences localStorage = await SharedPreferences.getInstance();
-      localStorage.remove('user');
-      localStorage.remove('token');
-
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Login()));
-    }
   }
 }

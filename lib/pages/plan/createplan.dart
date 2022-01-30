@@ -1,463 +1,496 @@
 import 'dart:convert';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:salessystem/models/customermodel.dart';
 import 'package:salessystem/models/planmodel.dart';
+import 'package:salessystem/models/profilemodel.dart';
 import 'package:salessystem/network/api.dart';
-import 'package:salessystem/pages/plan/planlist.dart';
 
 class CreatePlan extends StatefulWidget {
-  CreatePlan({Key key}) : super(key: key);
+  CreatePlan({Key? key}) : super(key: key);
 
   @override
-  _CreatePlanState createState() => _CreatePlanState();
+  State<CreatePlan> createState() => _CreatePlanState();
 }
 
 class _CreatePlanState extends State<CreatePlan> {
   final formKey = GlobalKey<FormState>(); //key for form
 
-  String nama,
-      tanggalKunjungan,
-      jamMulai,
-      jamSelesai,
-      catatan,
-      tujuan,
-      kunjungan_value,
-      emp_number,
-      tujuan_value;
+  PostPlan? plan;
 
-  var now = DateTime.now();
-  String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  final String url = 'customer';
 
-  List namaList;
-  String _nama;
-
-  String _catatan;
-
-  TimeOfDay timeMulai;
-  TimeOfDay pickedMulai;
-  TimeOfDay timeSelesai;
-  TimeOfDay pickedSelesai;
-
+  // Value list
+  var _CustJson = [];
+  String? _valCustomer;
   bool checkBoxKunjungan = false;
   bool checkBoxPenagihan = false;
-  String kunjungan;
-  String penagihan;
+  String? nama,
+      kunjungan,
+      penagihan,
+      jam_mulai,
+      jam_selesai,
+      empNumber,
+      tanggalKunjungan,
+      catatan;
 
-  TextEditingController _datecontroller = new TextEditingController();
-  String formattedDate;
-  DateTime date = DateTime.now();
+  String _catatan = 'Tidak ada Catatan';
 
-  var myFormat = DateFormat('d-MM-yyyy');
+  void fetchCustomer() async {
+    try {
+      final response = await Network().getData(url);
+      final jsonData = jsonDecode(response.body) as List;
+
+      setState(() {
+        _CustJson = jsonData;
+      });
+    } catch (e) {}
+  }
+
+  UserModel? profile;
+
+  void _getEmp() async {
+    UserModel.connectToApi('profile').then((value) {
+      profile = value;
+      setState(() {});
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    timeMulai = TimeOfDay.now();
-    timeSelesai = TimeOfDay.now();
-    _getNama();
+    fetchCustomer();
     _getEmp();
+
+    jam_mulai = TimeOfDay.now().toString();
+    jam_selesai = TimeOfDay.now().toString();
+    print(jam_mulai);
+    print(jam_selesai);
+    tanggalKunjungan = DateFormat('yyyy-MM-dd').format(date);
+    kunjungan = 'Tidak';
+    penagihan = 'Tidak';
+    catatan = _catatan;
+
+    UserModel.connectToApi('profile').then((value) {
+      profile = value;
+      setState(() {
+        empNumber = profile!.emp_number.toString();
+      });
+    });
+    print(empNumber);
+    print(tanggalKunjungan);
+    print(kunjungan);
+    print(penagihan);
+    print(catatan);
+    // print(empNumber);
   }
-
-  // Future getEmpNumber() async {
-  //   var response = Network().getData('profile');
-  //   var body = jsonDecode(response);
-
-  //   setState(() {
-  //     emp_number = body['emp_number'];
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
-    PostCustomer postResult = null;
-    TextEditingController TECnama = new TextEditingController();
     return Scaffold(
-        appBar: AppBar(title: Text("Create Plan")),
-        resizeToAvoidBottomInset: true,
-        body: Form(
-            key: formKey,
-            child: SafeArea(
-                child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Center(
-                      child: Text("Create Plan",
-                          textScaleFactor: 2.0,
-                          style: TextStyle(fontWeight: FontWeight.bold))),
-                  // checkbox
-                  Card(
-                    elevation: 4,
-                    child: Column(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.only(left: 15, right: 15, top: 5),
-                          color: Colors.white,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Expanded(
-                                child: DropdownButtonHideUnderline(
-                                  child: ButtonTheme(
-                                    alignedDropdown: true,
-                                    child: DropdownButton<String>(
-                                      value: _nama,
-                                      iconSize: 30,
-                                      icon: (null),
-                                      style: TextStyle(
-                                        color: Colors.black54,
-                                        fontSize: 16,
-                                      ),
-                                      hint: Text('Pilih Customer'),
-                                      onChanged: (String newValue) {
-                                        setState(() {
-                                          _nama = newValue;
-                                          _getNama();
-                                          // print(_nama);
-                                          nama = _nama;
-                                          print(nama);
-                                        });
-                                      },
-                                      items: namaList?.map((item) {
-                                            return new DropdownMenuItem(
-                                              child: new Text(item['nama']),
-                                              value: item['nama'].toString(),
-                                            );
-                                          })?.toList() ??
-                                          [],
-                                    ),
-                                  ),
+      appBar: AppBar(title: Text("Buat Rencana")),
+      resizeToAvoidBottomInset: true,
+      body: Form(
+        key: formKey,
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(children: [
+              Center(
+                child: Text("Buat Rencana",
+                    textScaleFactor: 2.0,
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+              Card(
+                elevation: 4,
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(left: 15, right: 15, top: 5),
+                      color: Colors.white,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Expanded(
+                            child: DropdownButtonHideUnderline(
+                              child: ButtonTheme(
+                                alignedDropdown: true,
+                                child: DropdownButton(
+                                  hint: Text("Pilih Customer"),
+                                  value: _valCustomer,
+                                  items: _CustJson.map((item) {
+                                    return DropdownMenuItem(
+                                      child: Text(item['nama']),
+                                      value: item['nama'],
+                                    );
+                                  }).toList(),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _valCustomer = value!.toString();
+                                      nama = _valCustomer.toString();
+                                      print(nama);
+                                    });
+                                  },
                                 ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisSize: MainAxisSize.max,
+                      // crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Text(
+                                "Kunjungan",
+                                textAlign: TextAlign.center,
+                              ),
+                              Checkbox(
+                                value: checkBoxKunjungan,
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    checkBoxKunjungan = value!;
+                                    if (checkBoxKunjungan == true) {
+                                      kunjungan = "Ya";
+                                    } else {
+                                      kunjungan = "Tidak";
+                                    }
+                                  });
+                                  print(kunjungan);
+                                },
                               ),
                             ],
                           ),
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          mainAxisSize: MainAxisSize.max,
-                          // crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "Kunjungan",
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  Checkbox(
-                                      value: checkBoxKunjungan,
-                                      onChanged: (bool value) {
-                                        valKunjungan(value); // print(value);
-                                      }),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "Penagihan",
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  Checkbox(
-                                    value: checkBoxPenagihan,
-                                    onChanged: (bool value) {
-                                      valPenagihan(value);
-                                    },
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Date Picker
-                  Card(
-                    elevation: 4,
-                    child: Column(
-                      children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text('Tanggal Kedatangan: ',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                        ),
-
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              top: 10.0, bottom: 10.0, left: 8.0, right: 8.0),
-                          child: InkWell(
-                            onTap: () => _selectDate(context),
-                            child: IgnorePointer(
-                              child: TextFormField(
-                                controller: _datecontroller,
-                                decoration: InputDecoration(
-                                  focusColor: Colors.teal,
-                                  hintText: ('${myFormat.format(date)}'),
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                      borderSide:
-                                          BorderSide(color: Colors.grey)),
-                                ),
+                          child: Row(
+                            children: [
+                              Text(
+                                "Penagihan",
+                                textAlign: TextAlign.center,
                               ),
-                            ),
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 10.0,
-                                  bottom: 10.0,
-                                  left: 8.0,
-                                  right: 8.0),
-                              child: InkWell(
-                                onTap: () => selectTimeMulai(context),
-                                child: IgnorePointer(
-                                  child: Container(
-                                    padding: EdgeInsets.all(20.0),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.blue,
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          'Jam Mulai',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            Icon(Icons.watch_later_outlined,
-                                                color: Colors.white),
-                                            Text(
-                                              "${timeMulai.hour}:${timeMulai.minute}",
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 10.0,
-                                  bottom: 10.0,
-                                  left: 8.0,
-                                  right: 8.0),
-                              child: InkWell(
-                                onTap: () => selectTimeSelesai(context),
-                                child: IgnorePointer(
-                                  child: Container(
-                                    padding: EdgeInsets.all(20.0),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.red,
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          'Jam Selesai',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            Icon(Icons.watch_later_outlined,
-                                                color: Colors.white),
-                                            Text(
-                                              "${timeSelesai.hour}:${timeSelesai.minute}",
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-
-                        // Catatan
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            height: 200,
-                            child: SizedBox(
-                              height: 100,
-                              child: new TextFormField(
-                                maxLines: 8,
-                                onChanged: (String value) {
-                                  if (value == null || value == '') {
-                                    setState(() {
-                                      _catatan = value;
-                                      catatan = _catatan;
-                                    });
-                                  } else {
-                                    setState(() {
-                                      _catatan = " ";
-                                      catatan = _catatan;
-                                    });
-                                  }
+                              Checkbox(
+                                value: checkBoxPenagihan,
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    checkBoxPenagihan = value!;
+                                    if (checkBoxPenagihan == true) {
+                                      penagihan = "Ya";
+                                    } else {
+                                      penagihan = "Tidak";
+                                    }
+                                  });
+                                  print(penagihan);
                                 },
-                                // expands: true,
-                                decoration: new InputDecoration(
-                                  hintText: 'Masukkan Catatan',
-                                  enabledBorder: const OutlineInputBorder(
-                                    // width: 0.0 produces a thin "hairline" border
-                                    borderSide: const BorderSide(
-                                        color: Colors.grey, width: 0.0),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Card(
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2005),
+                              lastDate: DateTime(2305));
+                        },
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 10.0,
+                                  bottom: 10.0,
+                                  left: 8.0,
+                                  right: 8.0),
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 10.0,
+                                    bottom: 10.0,
+                                    left: 8.0,
+                                    right: 8.0),
+                                child: InkWell(
+                                  onTap: () => _selectDate(context),
+                                  child: IgnorePointer(
+                                    child: TextFormField(
+                                      controller: _datecontroller,
+                                      decoration: InputDecoration(
+                                        focusColor: Colors.teal,
+                                        hintText: ('${myFormat.format(date)}'),
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            borderSide:
+                                                BorderSide(color: Colors.grey)),
+                                      ),
+                                    ),
                                   ),
-                                  border: const OutlineInputBorder(),
-                                  labelStyle:
-                                      new TextStyle(color: Colors.green),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 10.0, bottom: 10.0, left: 8.0, right: 8.0),
+                            child: InkWell(
+                              onTap: () => selectTimeMulai(context),
+                              child: IgnorePointer(
+                                child: Container(
+                                  padding: EdgeInsets.all(20.0),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.blue,
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        'Jam Mulai',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Icon(Icons.watch_later_outlined,
+                                              color: Colors.white),
+                                          Text(
+                                            "${timeMulai.hour}:${timeMulai.minute}",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 10.0, bottom: 10.0, left: 8.0, right: 8.0),
+                            child: InkWell(
+                              onTap: () => selectTimeSelesai(context),
+                              child: IgnorePointer(
+                                child: Container(
+                                  padding: EdgeInsets.all(20.0),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.red,
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        'Jam Selesai',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Icon(Icons.watch_later_outlined,
+                                              color: Colors.white),
+                                          Text(
+                                            "${timeSelesai.hour}:${timeSelesai.minute}",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+
+                      // Catatan
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          height: 200,
+                          child: SizedBox(
+                            height: 100,
+                            child: new TextFormField(
+                              maxLines: 8,
+                              onChanged: (String value) {
+                                if (value != null) {
+                                  setState(() {
+                                    _catatan = value;
+                                    catatan = _catatan;
+                                  });
+                                }
+                              },
+                              decoration: new InputDecoration(
+                                hintText: 'Masukkan Catatan',
+                                enabledBorder: const OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.grey, width: 0.0),
+                                ),
+                                border: const OutlineInputBorder(),
+                                labelStyle: new TextStyle(color: Colors.green),
+                              ),
+                            ),
+                          ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: MaterialButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                            ),
-                            color: Colors.green,
-                            padding: EdgeInsets.all(20),
-                            onPressed: () {
-                              print(kunjungan_value);
-                              print(tujuan_value);
-                              print(jamMulai);
-                              print(jamSelesai);
-                              print(emp_number);
-                              if (formKey.currentState.validate()) {
-                                // emp_number = getEmpNumber().toString();
-                                AwesomeDialog(
-                                    context: context,
-                                    animType: AnimType.LEFTSLIDE,
-                                    headerAnimationLoop: false,
-                                    dialogType: DialogType.SUCCES,
-                                    showCloseIcon: true,
-                                    title: 'Succes',
-                                    desc: 'Plan telah ditambahkan!',
-                                    btnOkOnPress: () => Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (context) => PlanList())),
-                                    btnOkIcon: Icons.check_circle,
-                                    onDissmissCallback: (type) {
-                                      debugPrint(
-                                          'Dialog Dissmiss from callback $type');
-                                    })
-                                  ..show();
-                                PostPlan.connectApi(
-                                        nama,
-                                        (tanggalKunjungan ?? today),
-                                        (jamMulai ??
-                                            "${timeMulai.hour}:${timeMulai.minute}"),
-                                        (jamSelesai ??
-                                            "${timeSelesai.hour}:${timeSelesai.minute}"),
-                                        (catatan ?? 'Tidak ada Catatan'),
-                                        (kunjungan_value ?? 'tidak'),
-                                        (tujuan_value ?? 'tidak'),
-                                        emp_number)
-                                    .then((value) {
-                                  setState(() {});
-                                });
-                              }
-                            },
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.check,
-                                  size: 25,
-                                  color: Colors.white,
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text("Tambahkan",
-                                    style: TextStyle(color: Colors.white))
-                              ],
-                            ),
-                          ),
-                        ),
-                        // Spacer(),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Expanded(
-                          child: MaterialButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                            ),
-                            color: Colors.red,
-                            padding: EdgeInsets.all(20),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.cancel,
-                                  size: 25,
-                                  color: Colors.white,
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  "Batal",
-                                  style: TextStyle(color: Colors.white),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
+                ),
               ),
-            ))));
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: MaterialButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                        color: Colors.green,
+                        padding: EdgeInsets.all(20),
+                        onPressed: () {
+                          print("Mulai: " + jam_mulai.toString());
+                          print("Selesai: " + jam_selesai.toString());
+                          print("Tanggal: " + tanggalKunjungan.toString());
+                          print("Kunjungan: " + kunjungan.toString());
+                          print("penagihan: " + penagihan.toString());
+                          print("Emp.Number: " + empNumber.toString());
+                          print(catatan);
+                          if (formKey.currentState!.validate()) {
+                            // emp_number = getEmpNumber().toString();
+                            AwesomeDialog(
+                                context: context,
+                                animType: AnimType.LEFTSLIDE,
+                                headerAnimationLoop: false,
+                                dialogType: DialogType.SUCCES,
+                                showCloseIcon: true,
+                                title: 'Succes',
+                                desc: 'Plan telah ditambahkan!',
+                                btnOkOnPress: () => Navigator.of(context).pop(),
+                                btnOkIcon: Icons.check_circle,
+                                onDissmissCallback: (type) {
+                                  debugPrint(
+                                      'Dialog Dissmiss from callback $type');
+                                })
+                              ..show();
+                            PostPlan.sendData(
+                                    nama.toString(),
+                                    tanggalKunjungan.toString(),
+                                    jam_mulai.toString(),
+                                    jam_selesai.toString(),
+                                    kunjungan.toString(),
+                                    penagihan.toString(),
+                                    catatan.toString(),
+                                    empNumber.toString())
+                                .then((value) {
+                              plan = value;
+                              setState(() {});
+                            });
+                          }
+                        },
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.check,
+                              size: 25,
+                              color: Colors.white,
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text("Tambahkan",
+                                style: TextStyle(color: Colors.white))
+                          ],
+                        ),
+                      ),
+                    ),
+                    // Spacer(),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: MaterialButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                        color: Colors.red,
+                        padding: EdgeInsets.all(20),
+                        onPressed: () {
+                          Navigator().initialRoute;
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.cancel,
+                              size: 25,
+                              color: Colors.white,
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              "Batal",
+                              style: TextStyle(color: Colors.white),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ]),
+          ),
+        ),
+      ),
+    );
   }
 
+  // Date Picker
+  TextEditingController _datecontroller = new TextEditingController();
+  var myFormat = DateFormat('d-MM-yyyy');
+  DateTime date = DateTime.now();
+  String? formattedDate;
+
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime picked = await showDatePicker(
+    final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: date,
         firstDate: DateTime(2001, 8),
@@ -465,40 +498,16 @@ class _CreatePlanState extends State<CreatePlan> {
     setState(() {
       date = picked ?? date;
       formattedDate = DateFormat('yyyy-MM-dd').format(date);
-      tanggalKunjungan = formattedDate;
+      tanggalKunjungan = formattedDate.toString();
       print(tanggalKunjungan);
     });
   }
 
-  Widget valKunjungan(value) {
-    setState(() {
-      checkBoxKunjungan = value;
-    });
-    if (value == true) {
-      kunjungan = 'ya';
-      kunjungan_value = kunjungan;
-      print(kunjungan_value);
-    } else if (value != true || value == null) {
-      kunjungan = 'tidak';
-      kunjungan_value = kunjungan;
-      print(kunjungan_value);
-    }
-  }
-
-  Widget valPenagihan(value) {
-    setState(() {
-      checkBoxPenagihan = value;
-    });
-    if (value == true) {
-      penagihan = 'ya';
-      tujuan_value = penagihan;
-      print(tujuan_value);
-    } else if (value != true || value == null) {
-      penagihan = 'tidak';
-      tujuan_value = penagihan;
-      print(tujuan_value);
-    }
-  }
+  // Time Picker
+  TimeOfDay timeMulai = TimeOfDay.now();
+  TimeOfDay? pickedMulai;
+  TimeOfDay timeSelesai = TimeOfDay.now();
+  TimeOfDay? pickedSelesai;
 
   Future<Null> selectTimeMulai(BuildContext context) async {
     pickedMulai = await showTimePicker(
@@ -508,8 +517,8 @@ class _CreatePlanState extends State<CreatePlan> {
 
     if (pickedMulai != null) {
       setState(() {
-        timeMulai = pickedMulai;
-        jamMulai = "${timeMulai.hour}:${timeMulai.minute}";
+        timeMulai = pickedMulai!;
+        jam_mulai = "${timeMulai.hour}:${timeMulai.minute}";
       });
     }
   }
@@ -522,30 +531,9 @@ class _CreatePlanState extends State<CreatePlan> {
 
     if (pickedSelesai != null) {
       setState(() {
-        timeSelesai = pickedSelesai;
-        jamSelesai = "${timeSelesai.hour}:${timeSelesai.minute}";
+        timeSelesai = pickedSelesai!;
+        jam_selesai = "${timeSelesai.hour}:${timeSelesai.minute}";
       });
     }
-  }
-
-  String url = 'customer';
-  Future<String> _getNama() async {
-    await Network().getData(url).then((response) {
-      var data = json.decode(response.body);
-
-      setState(() {
-        namaList = data['data'];
-      });
-    });
-  }
-
-  Future<String> _getEmp() async {
-    await Network().getData('profile').then((response) {
-      var data = json.decode(response.body);
-
-      setState(() {
-        emp_number = data['emp_number'];
-      });
-    });
   }
 }
