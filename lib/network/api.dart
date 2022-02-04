@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Network {
   final String _url = 'http://127.0.0.1:8000/api/';
+  // final String _url = 'http://192.168.1.2:8000/api/';
+
   var token;
 
   _getToken() async {
@@ -43,6 +45,18 @@ class Network {
     print(token);
     return await http.post(Uri.parse(fullUrl),
         body: body, headers: {'Authorization': 'Bearer $token'});
+  }
+
+  sendDataJson(apiURL, body) async {
+    var fullUrl = _url + apiURL;
+    await _getToken();
+    print(token);
+    return await http
+        .post(Uri.parse(fullUrl), body: jsonEncode(body), headers: {
+      'Authorization': 'Bearer $token',
+      // 'Content-type': 'application/json',
+      'Accept': 'application/json'
+    });
   }
 
   getNama(apiURL, body) async {

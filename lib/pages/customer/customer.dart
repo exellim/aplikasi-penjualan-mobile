@@ -50,45 +50,58 @@ class _CustomerListState extends State<CustomerList> {
       ),
       body: RefreshIndicator(
         onRefresh: _refresh,
-        child: ListView.builder(
-            itemCount: _CustJson.length,
-            itemBuilder: (context, index) {
-              final cust = _CustJson[index];
-              return Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Card(
-                    elevation: 8,
-                    child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              AutoSizeText("${cust["nama"]}",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  textAlign: TextAlign.start,
-                                  maxLines: 2),
-                              SizedBox(
-                                height: 5.0,
-                              ),
-                              Text("${cust["alamat_rumah"]}",
-                                  maxLines: 2,
-                                  softWrap: true,
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.start,
-                                  textScaleFactor: 1),
-                              Text("${cust["handphone"]}",
-                                  maxLines: 2,
-                                  softWrap: true,
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.start,
-                                  textScaleFactor: 1),
-                            ]))),
-              );
-            }),
+        child: Column(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height / 3,
+              color: Colors.green,
+            ),
+            Expanded(
+              child: ListView.builder(
+                  // shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: _CustJson.length,
+                  itemBuilder: (context, index) {
+                    final cust = _CustJson[index];
+                    return Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Card(
+                          elevation: 8,
+                          child: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    AutoSizeText("${cust["nama"]}",
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        textAlign: TextAlign.start,
+                                        maxLines: 2),
+                                    SizedBox(
+                                      height: 5.0,
+                                    ),
+                                    Text("${cust["alamat_rumah"]}",
+                                        maxLines: 2,
+                                        softWrap: true,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.start,
+                                        textScaleFactor: 1),
+                                    Text("${cust["handphone"]}",
+                                        maxLines: 2,
+                                        softWrap: true,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.start,
+                                        textScaleFactor: 1),
+                                  ]))),
+                    );
+                  }),
+            ),
+          ],
+        ),
       ),
     );
   }

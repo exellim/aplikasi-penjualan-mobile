@@ -142,9 +142,10 @@ class PostPlan {
     });
 
     final String url = "kunjungan/add";
+    print(bodies);
     var postResult = await Network().sendData(url, bodies);
     var jsonObject = jsonDecode(postResult.body);
-
+    print(jsonObject);
     return PostPlan.createPlanResult(jsonObject);
   }
 }

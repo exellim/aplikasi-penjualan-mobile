@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:salessystem/pages/account/login.dart';
 // import 'package:salessystem/pages/account/register.dart';
 import 'package:salessystem/pages/home.dart';
+import 'package:salessystem/uitest.dart';
 // import 'package:salessystem/pages/forms/suratjalan.dart';
 // import 'package:salessystem/pages/home.dart';
 // import 'package:salessystem/pages/plan/planlist.dart';
