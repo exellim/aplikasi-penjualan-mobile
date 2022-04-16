@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 // import 'package:salessystem/materials/sidebar.dart';
 import 'package:salessystem/pages/customer/customer.dart';
 import 'package:salessystem/pages/plan/planlist.dart';
@@ -37,7 +38,7 @@ class _HomePageState extends State<HomePage> {
                     child: Wrap(
                       children: [
                         Container(
-                          decoration: BoxDecoration(color: Colors.grey),
+                          // decoration: BoxDecoration(color: Colors.grey),
                           height: 500,
                           width: 400,
                           child: Column(
@@ -45,11 +46,9 @@ class _HomePageState extends State<HomePage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisSize: MainAxisSize.max,
                             children: [
-                              Expanded(child: Text("Graph container")),
-                              Expanded(child: Text("Graph container")),
-                              Expanded(child: Text("Graph container")),
-                              Expanded(child: Text("Graph container")),
-                              Expanded(child: Text("Graph container")),
+                              Text("Your Logo\n Here", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24),textAlign: TextAlign.center,),
+                              SizedBox(height: 8.0,),
+                              Lottie.network('https://assets9.lottiefiles.com/private_files/lf30_cPwdH6.json'),
                             ],
                           ),
                         ),

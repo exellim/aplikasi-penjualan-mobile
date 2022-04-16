@@ -57,14 +57,6 @@ class _NotaFakturState extends State<NotaFaktur> {
   }
 
   var idNota;
-  void idGenerator() {
-    var rng = Random();
-    for (var i = 0; i < 10; i++) {
-      setState(() {
-        idNota = rng.nextInt(1000);
-      });
-    }
-  }
 
   // Map<dynamic, String> nama_produk = {};
   // Map<dynamic, int> harga_produk = {};
@@ -82,7 +74,6 @@ class _NotaFakturState extends State<NotaFaktur> {
     super.initState();
     fetchCustomer();
     _getEmp();
-    idGenerator();
     // postingList();
 
     notaModel.produk = new List<String>.empty(growable: true);
@@ -201,20 +192,6 @@ class _NotaFakturState extends State<NotaFaktur> {
                 ],
               ),
               _produkContainer(),
-              // Center(child: Text("Tanda Tangan Customer")),
-              // SizedBox(
-              //   height: 5,
-              // ),
-              // Container(
-              //   decoration:
-              //       BoxDecoration(border: Border.all(style: BorderStyle.solid)),
-              //   child: SfSignaturePad(
-              //     key: keySignaturePad,
-              //   ),
-              // ),
-              // SizedBox(
-              //   height: 5,
-              // ),
               Center(
                 child: Row(
                   children: [
@@ -231,47 +208,20 @@ class _NotaFakturState extends State<NotaFaktur> {
                     FormHelper.submitButton("Send", () {
                       if (globalKey.currentState!.validate()) {
                         postingList();
-                        // PostNota.sendData(
-                        //         "km2222",
-                        //         _valCustomer.toString(),
-                        //         phone.toString(),
-                        //         nama_produk = notaModel.produk!.toList(),
-                        //         notaModel.jumlah!.toList(),
-                        //         notaModel.harga!.toList(),
-                        //         notaModel.subTotal!.toList())
-                        //     .then((value) {
-                        //   nota = value;
-                        //   setState(() {});
-                        // });
-                        // emp_number = getEmpNumber().toString();
-                        // AwesomeDialog(
-                        //     context: context,
-                        //     animType: AnimType.LEFTSLIDE,
-                        //     headerAnimationLoop: false,
-                        //     dialogType: DialogType.SUCCES,
-                        //     showCloseIcon: true,
-                        //     title: 'Succes',
-                        //     desc: 'Plan telah ditambahkan!',
-                        //     btnOkOnPress: () => Navigator.of(context).pop(),
-                        //     btnOkIcon: Icons.check_circle,
-                        //     onDissmissCallback: (type) {
-                        //       debugPrint('Dialog Dissmiss from callback $type');
-                        //     })
-                        // ..show();
-                        // PostNota.sendData("notaId", _valCustomer.toString(), handphone, produk, jumlah, harga, subTotal)
-                        // PostNota.sendData(
-                        //         "KM-0002-0001",
-                        //         _valCustomer.toString(),
-                        //         phone.toString(),
-                        //         // notaModel.produk!.toList(),
-                        //         // notaModel.jumlah!.toList(),
-                        //         // notaModel.harga!.toList(),
-                        //         // notaModel.subTotal!.toList()
-                        //         )
-                        //     .then((value) {
-                        //   nota = value;
-                        //   setState(() {});
-                        // });
+                        AwesomeDialog(
+                            context: context,
+                            animType: AnimType.LEFTSLIDE,
+                            headerAnimationLoop: false,
+                            dialogType: DialogType.SUCCES,
+                            showCloseIcon: true,
+                            title: 'Succes',
+                            desc: 'Plan telah ditambahkan!',
+                            btnOkOnPress: () => Navigator.of(context).pop(),
+                            btnOkIcon: Icons.check_circle,
+                            onDissmissCallback: (type) {
+                              debugPrint('Dialog Dissmiss from callback $type');
+                            })
+                          ..show();
                       }
                     },
                         borderColor: Colors.green.shade500,
@@ -480,6 +430,7 @@ class _NotaFakturState extends State<NotaFaktur> {
         notaModel.produk!.removeAt(index);
         notaModel.jumlah!.removeAt(index);
         notaModel.harga!.removeAt(index);
+        notaModel.subTotal!.removeAt(index);
       }
     });
   }
@@ -496,9 +447,9 @@ class _NotaFakturState extends State<NotaFaktur> {
 
   void notaResult() {
     var gt = 0;
-    List subtot = [];
+    // var notaModelNew = new NotaModel();
+    notaModel.subTotal = [];
     for (int i = 0; i < notaModel.jumlah!.length; i++) {
-      notaModel.subTotal;
       // subtot = notaModel.subTotal!.add(notaModel.jumlah![i] * notaModel.harga![i]);
       notaModel.subTotal!.add(notaModel.jumlah![i] * notaModel.harga![i]);
     }
@@ -516,22 +467,54 @@ class _NotaFakturState extends State<NotaFaktur> {
 
   postingList() async {
     data = {
-      "notaId": "$empNumber - $idNota",
+      "notaId": "$empNumber",
       "nama": _valCustomer.toString(),
       "nomor_telfon": phone.toString(),
     };
+    var nama_produk = "[";
     for (var i = 0; i < notaModel.produk!.length; i++) {
-      data.addAll({"nama_produk[$i]": notaModel.produk![i]});
+      if (i == (notaModel.produk!.length) - 1) {
+        nama_produk += "'" + notaModel.produk![i] + "'";
+      } else {
+        nama_produk += "'" + notaModel.produk![i] + "',";
+      }
     }
+    nama_produk += "]";
+    data.addAll({'nama_produk': nama_produk});
+
+    var qty_produk = "[";
     for (var y = 0; y < notaModel.jumlah!.length; y++) {
-      data.addAll({"qty_produk[$y]": notaModel.jumlah![y].toString()});
+      if (y == (notaModel.jumlah!.length) - 1) {
+        qty_produk += notaModel.jumlah![y].toString();
+      } else {
+        qty_produk += notaModel.jumlah![y].toString() + ",";
+      }
     }
+    qty_produk += "]";
+    data.addAll({'qty_produk': qty_produk});
+
+    var harga_produk = "[";
     for (var x = 0; x < notaModel.harga!.length; x++) {
-      data.addAll({"harga_produk[$x]": notaModel.harga![x].toString()});
+      if (x == (notaModel.harga!.length) - 1) {
+        harga_produk += notaModel.harga![x].toString();
+      } else {
+        harga_produk += notaModel.harga![x].toString() + ",";
+      }
     }
+    harga_produk += "]";
+    data.addAll({'harga_produk': harga_produk});
+
+    var subtotal_harga = "[";
     for (var n = 0; n < notaModel.subTotal!.length; n++) {
-      data.addAll({"subtotal_harga[$n]": notaModel.subTotal![n].toString()});
+      if (n == (notaModel.subTotal!.length) - 1) {
+        subtotal_harga += notaModel.subTotal![n].toString();
+      } else {
+        subtotal_harga += notaModel.subTotal![n].toString() + ",";
+      }
     }
+    subtotal_harga += "]";
+    data.addAll({'subtotal_harga': subtotal_harga});
+
     var response = await Network().sendData("nota/add", data);
     // var json = jsonDecode(response.body);
     if (response.statusCode == 200) {

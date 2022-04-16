@@ -4,6 +4,7 @@ import 'package:salessystem/models/profilemodel.dart';
 import 'package:salessystem/pages/customer/customer.dart';
 import 'package:salessystem/pages/home.dart';
 import 'package:salessystem/pages/plan/planlist.dart';
+import 'package:salessystem/pages/takeorder/takeorder.dart';
 
 class NavigationDrawerWidget extends StatefulWidget {
   @override
@@ -219,7 +220,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
         break;
       case 2:
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => CustomerList()));
+            .push(MaterialPageRoute(builder: (context) => Order()));
         break;
       case 8:
         Navigator.of(context)

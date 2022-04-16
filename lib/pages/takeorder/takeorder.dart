@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:salessystem/materials/drawer.dart';
 import 'package:salessystem/network/api.dart';
 import 'package:salessystem/pages/takeorder/notafaktur.dart';
@@ -51,13 +52,16 @@ class _OrderState extends State<Order> {
       drawer: Container(
           width: MediaQuery.of(context).size.width / 2 + 40,
           child: NavigationDrawerWidget()),
-      body: Column(
+      body: RefreshIndicator
+      (onRefresh: _refresh,
+        child: Column(
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height / 3,
-            color: Colors.green,
-          ),
+            height: MediaQuery.of(context).size.height / 3.8,
+              child: 
+                      Lottie.network('https://assets7.lottiefiles.com/packages/lf20_z9agdrw6.json', fit: BoxFit.fill)
+               ),
           Expanded(
             child: ListView.builder(
                 scrollDirection: Axis.vertical,
@@ -111,7 +115,12 @@ class _OrderState extends State<Order> {
                 }),
           )
         ],
-      ),
+      ),)
     );
+  }
+  
+  Future<void> _refresh() async {
+    fetchNota();
+    return Future.delayed(Duration(seconds: 1));
   }
 }

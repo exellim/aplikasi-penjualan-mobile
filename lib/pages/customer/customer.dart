@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:salessystem/materials/drawer.dart';
 import 'package:salessystem/models/customerModel.dart';
 import 'package:salessystem/network/api.dart';
@@ -54,8 +55,23 @@ class _CustomerListState extends State<CustomerList> {
           children: [
             Container(
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 3,
-              color: Colors.green,
+              height: MediaQuery.of(context).size.height / 3.8,
+              // color: Colors.green,
+              child: 
+                  Stack(
+                    children: [
+                      Column(
+                children: [
+                  Stack(
+                    children: [
+                      Expanded(child: Text("Customer Page",style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
+                    ],
+                  ),
+                      Lottie.network('https://assets3.lottiefiles.com/packages/lf20_sdhrtxpw.json')
+                    ],
+                  ),
+                ],
+              ),
             ),
             Expanded(
               child: ListView.builder(

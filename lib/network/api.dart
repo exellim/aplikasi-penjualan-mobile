@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Network {
+  // final String _url = 'https://sjs-be.herokuapp.com/api/';
   final String _url = 'http://127.0.0.1:8000/api/';
-  // final String _url = 'http://192.168.1.2:8000/api/';
 
   var token;
 
