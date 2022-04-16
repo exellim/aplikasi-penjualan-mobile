@@ -195,7 +195,7 @@ class _NotaFakturState extends State<NotaFaktur> {
               Center(
                 child: Row(
                   children: [
-                    FormHelper.submitButton("Save", () {
+                    FormHelper.submitButton("Calculate", () {
                       if (validateAndSave()) {
                         print(notaModel.toJson());
                         notaResult();
@@ -205,7 +205,7 @@ class _NotaFakturState extends State<NotaFaktur> {
                     SizedBox(
                       width: 4,
                     ),
-                    FormHelper.submitButton("Send", () {
+                    FormHelper.submitButton("Save", () {
                       if (globalKey.currentState!.validate()) {
                         postingList();
                         AwesomeDialog(
